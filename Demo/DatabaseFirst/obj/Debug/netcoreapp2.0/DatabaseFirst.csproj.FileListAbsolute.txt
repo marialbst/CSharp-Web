@@ -1,0 +1,11 @@
+C:\Users\schet\Desktop\c#\C# WEB\Demo\DatabaseFirst\bin\Debug\netcoreapp2.0\DatabaseFirst.deps.json
+C:\Users\schet\Desktop\c#\C# WEB\Demo\DatabaseFirst\bin\Debug\netcoreapp2.0\DatabaseFirst.runtimeconfig.json
+C:\Users\schet\Desktop\c#\C# WEB\Demo\DatabaseFirst\bin\Debug\netcoreapp2.0\DatabaseFirst.runtimeconfig.dev.json
+C:\Users\schet\Desktop\c#\C# WEB\Demo\DatabaseFirst\bin\Debug\netcoreapp2.0\DatabaseFirst.dll
+C:\Users\schet\Desktop\c#\C# WEB\Demo\DatabaseFirst\obj\Debug\netcoreapp2.0\DatabaseFirst.csprojResolveAssemblyReference.cache
+C:\Users\schet\Desktop\c#\C# WEB\Demo\DatabaseFirst\obj\Debug\netcoreapp2.0\DatabaseFirst.csproj.CoreCompileInputs.cache
+C:\Users\schet\Desktop\c#\C# WEB\Demo\DatabaseFirst\obj\Debug\netcoreapp2.0\DatabaseFirst.AssemblyInfoInputs.cache
+C:\Users\schet\Desktop\c#\C# WEB\Demo\DatabaseFirst\obj\Debug\netcoreapp2.0\DatabaseFirst.AssemblyInfo.cs
+C:\Users\schet\Desktop\c#\C# WEB\Demo\DatabaseFirst\bin\Debug\netcoreapp2.0\DatabaseFirst.pdb
+C:\Users\schet\Desktop\c#\C# WEB\Demo\DatabaseFirst\obj\Debug\netcoreapp2.0\DatabaseFirst.dll
+C:\Users\schet\Desktop\c#\C# WEB\Demo\DatabaseFirst\obj\Debug\netcoreapp2.0\DatabaseFirst.pdb

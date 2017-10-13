@@ -1,0 +1,11 @@
+C:\Users\schet\Desktop\c#\C# WEB\AsynchronousProcessingLab\02.SliceFiles\bin\Debug\netcoreapp2.0\02.SliceFiles.deps.json
+C:\Users\schet\Desktop\c#\C# WEB\AsynchronousProcessingLab\02.SliceFiles\bin\Debug\netcoreapp2.0\02.SliceFiles.runtimeconfig.json
+C:\Users\schet\Desktop\c#\C# WEB\AsynchronousProcessingLab\02.SliceFiles\bin\Debug\netcoreapp2.0\02.SliceFiles.runtimeconfig.dev.json
+C:\Users\schet\Desktop\c#\C# WEB\AsynchronousProcessingLab\02.SliceFiles\bin\Debug\netcoreapp2.0\02.SliceFiles.dll
+C:\Users\schet\Desktop\c#\C# WEB\AsynchronousProcessingLab\02.SliceFiles\bin\Debug\netcoreapp2.0\02.SliceFiles.pdb
+C:\Users\schet\Desktop\c#\C# WEB\AsynchronousProcessingLab\02.SliceFiles\obj\Debug\netcoreapp2.0\02.SliceFiles.csprojResolveAssemblyReference.cache
+C:\Users\schet\Desktop\c#\C# WEB\AsynchronousProcessingLab\02.SliceFiles\obj\Debug\netcoreapp2.0\02.SliceFiles.csproj.CoreCompileInputs.cache
+C:\Users\schet\Desktop\c#\C# WEB\AsynchronousProcessingLab\02.SliceFiles\obj\Debug\netcoreapp2.0\02.SliceFiles.AssemblyInfoInputs.cache
+C:\Users\schet\Desktop\c#\C# WEB\AsynchronousProcessingLab\02.SliceFiles\obj\Debug\netcoreapp2.0\02.SliceFiles.AssemblyInfo.cs
+C:\Users\schet\Desktop\c#\C# WEB\AsynchronousProcessingLab\02.SliceFiles\obj\Debug\netcoreapp2.0\02.SliceFiles.dll
+C:\Users\schet\Desktop\c#\C# WEB\AsynchronousProcessingLab\02.SliceFiles\obj\Debug\netcoreapp2.0\02.SliceFiles.pdb

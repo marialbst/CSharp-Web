@@ -1,0 +1,11 @@
+C:\Users\schet\Desktop\c#\C# WEB\Demo\02.OneToMany\obj\Debug\netcoreapp2.0\02.OneToMany.csprojResolveAssemblyReference.cache
+C:\Users\schet\Desktop\c#\C# WEB\Demo\02.OneToMany\obj\Debug\netcoreapp2.0\02.OneToMany.csproj.CoreCompileInputs.cache
+C:\Users\schet\Desktop\c#\C# WEB\Demo\02.OneToMany\obj\Debug\netcoreapp2.0\02.OneToMany.AssemblyInfoInputs.cache
+C:\Users\schet\Desktop\c#\C# WEB\Demo\02.OneToMany\obj\Debug\netcoreapp2.0\02.OneToMany.AssemblyInfo.cs
+C:\Users\schet\Desktop\c#\C# WEB\Demo\02.OneToMany\bin\Debug\netcoreapp2.0\_02.OneToMany.deps.json
+C:\Users\schet\Desktop\c#\C# WEB\Demo\02.OneToMany\bin\Debug\netcoreapp2.0\_02.OneToMany.runtimeconfig.json
+C:\Users\schet\Desktop\c#\C# WEB\Demo\02.OneToMany\bin\Debug\netcoreapp2.0\_02.OneToMany.runtimeconfig.dev.json
+C:\Users\schet\Desktop\c#\C# WEB\Demo\02.OneToMany\bin\Debug\netcoreapp2.0\_02.OneToMany.dll
+C:\Users\schet\Desktop\c#\C# WEB\Demo\02.OneToMany\bin\Debug\netcoreapp2.0\_02.OneToMany.pdb
+C:\Users\schet\Desktop\c#\C# WEB\Demo\02.OneToMany\obj\Debug\netcoreapp2.0\_02.OneToMany.dll
+C:\Users\schet\Desktop\c#\C# WEB\Demo\02.OneToMany\obj\Debug\netcoreapp2.0\_02.OneToMany.pdb

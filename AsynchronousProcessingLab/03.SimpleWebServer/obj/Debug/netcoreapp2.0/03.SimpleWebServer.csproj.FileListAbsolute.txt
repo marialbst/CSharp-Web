@@ -1,0 +1,11 @@
+C:\Users\schet\Desktop\c#\C# WEB\AsynchronousProcessingLab\03.SimpleWebServer\bin\Debug\netcoreapp2.0\03.SimpleWebServer.deps.json
+C:\Users\schet\Desktop\c#\C# WEB\AsynchronousProcessingLab\03.SimpleWebServer\bin\Debug\netcoreapp2.0\03.SimpleWebServer.runtimeconfig.json
+C:\Users\schet\Desktop\c#\C# WEB\AsynchronousProcessingLab\03.SimpleWebServer\bin\Debug\netcoreapp2.0\03.SimpleWebServer.runtimeconfig.dev.json
+C:\Users\schet\Desktop\c#\C# WEB\AsynchronousProcessingLab\03.SimpleWebServer\bin\Debug\netcoreapp2.0\03.SimpleWebServer.dll
+C:\Users\schet\Desktop\c#\C# WEB\AsynchronousProcessingLab\03.SimpleWebServer\bin\Debug\netcoreapp2.0\03.SimpleWebServer.pdb
+C:\Users\schet\Desktop\c#\C# WEB\AsynchronousProcessingLab\03.SimpleWebServer\obj\Debug\netcoreapp2.0\03.SimpleWebServer.csprojResolveAssemblyReference.cache
+C:\Users\schet\Desktop\c#\C# WEB\AsynchronousProcessingLab\03.SimpleWebServer\obj\Debug\netcoreapp2.0\03.SimpleWebServer.csproj.CoreCompileInputs.cache
+C:\Users\schet\Desktop\c#\C# WEB\AsynchronousProcessingLab\03.SimpleWebServer\obj\Debug\netcoreapp2.0\03.SimpleWebServer.AssemblyInfoInputs.cache
+C:\Users\schet\Desktop\c#\C# WEB\AsynchronousProcessingLab\03.SimpleWebServer\obj\Debug\netcoreapp2.0\03.SimpleWebServer.AssemblyInfo.cs
+C:\Users\schet\Desktop\c#\C# WEB\AsynchronousProcessingLab\03.SimpleWebServer\obj\Debug\netcoreapp2.0\03.SimpleWebServer.dll
+C:\Users\schet\Desktop\c#\C# WEB\AsynchronousProcessingLab\03.SimpleWebServer\obj\Debug\netcoreapp2.0\03.SimpleWebServer.pdb
