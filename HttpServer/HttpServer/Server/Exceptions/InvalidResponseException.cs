@@ -2,9 +2,9 @@
 {
     using System;
 
-    public class BadRequestException : Exception
+    public class InvalidResponseException : Exception
     {
-        public BadRequestException(string message)
+        public InvalidResponseException(string message)
             :base(message)
         {
         }

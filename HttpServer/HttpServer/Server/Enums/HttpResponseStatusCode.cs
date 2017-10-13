@@ -1,6 +1,6 @@
 ﻿namespace HttpServer.Server.Enums
 {
-    public enum ResponceStatusCode
+    public enum HttpResponseStatusCode
     {
         Ok = 200,
         MovedPermanently = 301,

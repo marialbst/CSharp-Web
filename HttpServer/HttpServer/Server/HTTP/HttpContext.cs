@@ -2,6 +2,7 @@
 {
     using Contracts;
     using Common;
+
     public class HttpContext : IHttpContext
     {
         private readonly IHttpRequest request;
