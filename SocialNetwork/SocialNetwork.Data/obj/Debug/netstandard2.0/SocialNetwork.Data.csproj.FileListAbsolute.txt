@@ -1,9 +1,0 @@
-C:\Users\schet\Desktop\c#\C# WEB\SocialNetwork\SocialNetwork.Data\bin\Debug\netstandard2.0\SocialNetwork.Data.deps.json
-C:\Users\schet\Desktop\c#\C# WEB\SocialNetwork\SocialNetwork.Data\bin\Debug\netstandard2.0\SocialNetwork.Data.dll
-C:\Users\schet\Desktop\c#\C# WEB\SocialNetwork\SocialNetwork.Data\obj\Debug\netstandard2.0\SocialNetwork.Data.csprojResolveAssemblyReference.cache
-C:\Users\schet\Desktop\c#\C# WEB\SocialNetwork\SocialNetwork.Data\obj\Debug\netstandard2.0\SocialNetwork.Data.csproj.CoreCompileInputs.cache
-C:\Users\schet\Desktop\c#\C# WEB\SocialNetwork\SocialNetwork.Data\obj\Debug\netstandard2.0\SocialNetwork.Data.AssemblyInfoInputs.cache
-C:\Users\schet\Desktop\c#\C# WEB\SocialNetwork\SocialNetwork.Data\obj\Debug\netstandard2.0\SocialNetwork.Data.AssemblyInfo.cs
-C:\Users\schet\Desktop\c#\C# WEB\SocialNetwork\SocialNetwork.Data\bin\Debug\netstandard2.0\SocialNetwork.Data.pdb
-C:\Users\schet\Desktop\c#\C# WEB\SocialNetwork\SocialNetwork.Data\obj\Debug\netstandard2.0\SocialNetwork.Data.dll
-C:\Users\schet\Desktop\c#\C# WEB\SocialNetwork\SocialNetwork.Data\obj\Debug\netstandard2.0\SocialNetwork.Data.pdb
