@@ -7,11 +7,11 @@
     {
         private readonly IHttpRequest request;
 
-        public HttpContext(IHttpRequest request)
+        public HttpContext(string requestString)
         {
-            CoreValidator.ThrowIfNull(request, nameof(request));
+            CoreValidator.ThrowIfNullOrEmpty(requestString, nameof(requestString));
 
-            this.request = request;
+            this.request = new HttpRequest(requestString);
         }
 
         public IHttpRequest Request => this.request;

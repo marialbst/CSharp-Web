@@ -3,8 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using Enums;
     using Exceptions;
     using Common;
@@ -21,7 +19,7 @@
             this.FormData = new Dictionary<string, string>();
             this.QueryParameters = new Dictionary<string, string>();
             this.UrlParameters = new Dictionary<string, string>();
-
+            Console.WriteLine(requestString);
             this.ParseRequest(requestString);
         }
 
@@ -58,7 +56,7 @@
             string[] requestLine = requestLines[0]
                 .Trim()
                 .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
+            
             if (requestLine.Length != 3 || requestLine[2].ToLower() != "http/1.1")
             {
                 throw new BadRequestException("Invalid request!");
@@ -85,7 +83,7 @@
             }
             catch (Exception)
             {
-                throw new BadRequestException("Invalid method");
+                throw new BadRequestException("Invalid method in request line");
             }
         }
 
@@ -95,7 +93,7 @@
 
             for (int i = 1; i < indexOfFirstEmptyLine; i++)
             {
-                string currentLine = requestLines[0];
+                string currentLine = requestLines[i];
 
                 string[] headerParameters = currentLine.Split(new[] { ": " }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -105,8 +103,9 @@
                 }
 
                 string key = headerParameters[0];
+                Console.WriteLine(key);
                 string value = headerParameters[1];
-
+                Console.WriteLine(value);
                 HttpHeader header = new HttpHeader(key, value);
                 this.Headers.Add(header);
             }

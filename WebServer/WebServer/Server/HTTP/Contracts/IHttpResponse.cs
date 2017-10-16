@@ -4,7 +4,7 @@
 
     public interface IHttpResponse
     {
-        IHttpHeaderCollection HeaderCollection { get; }
+        IHttpHeaderCollection Headers { get; }
 
         HttpStatusCode StatusCode { get; }
 

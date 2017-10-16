@@ -10,7 +10,7 @@
 
         public HttpHeaderCollection()
         {
-            this.headers = new Dictionary<string, HttpHeader>(StringComparer.OrdinalIgnoreCase);
+            this.headers = new Dictionary<string, HttpHeader>();
         }
 
         public void Add(HttpHeader header)

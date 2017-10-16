@@ -1,12 +1,28 @@
 ﻿namespace WebServer
 {
-    using System;
+    using Application;
+    using Server;
+    using Server.Contracts;
+    using Server.Routing;
+    using Server.Routing.Contracts;
 
-    class Launcher
+    class Launcher : IRunnable
     {
-        static void Main(string[] args)
+        private WebServer webServer;
+
+        static void Main()
         {
-            Console.WriteLine("Hello World!");
+            new Launcher().Run();
+        }
+
+        public void Run()
+        {
+            IApplication app = new MainApplication();
+            IAppRouteConfig appRouteConfig = new AppRouteConfig();
+            app.Start(appRouteConfig);
+
+            this.webServer = new WebServer(1333, appRouteConfig);
+            this.webServer.Run();
         }
     }
 }
