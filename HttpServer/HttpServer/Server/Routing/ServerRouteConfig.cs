@@ -83,6 +83,7 @@
 
                 if (!currentToken.StartsWith("{") && !currentToken.EndsWith("}"))
                 {
+                    result.Append("/");
                     result.Append($"{currentToken}{endChar}");
                     continue;
                 }

@@ -6,6 +6,7 @@
     using Contracts;
     using Enums;
     using Handlers;
+    using HttpServer.Server.HTTP.Contracts;
 
     public class AppRouteConfig : IAppRouteConfig
     {
@@ -21,11 +22,22 @@
 
             foreach (HttpRequestMethod method in methods)
             {
-                this.routes[method] = new Dictionary<string, RequestHandler>());
+                this.routes[method] = new Dictionary<string, RequestHandler>();
             }
         }
 
-        public IReadOnlyDictionary<HttpRequestMethod, IDictionary<string, RequestHandler>> Routes { get { return this.routes; } }
+        public IDictionary<HttpRequestMethod, IDictionary<string, RequestHandler>> Routes { get { return this.routes; } }
+
+        public void Get(string route, Func<IHttpContext, IHttpResponse> handler)
+        {
+            this.AddRoute(route, new GetHandler(handler));
+        }
+
+        public void Post(string route, Func<IHttpContext, IHttpResponse> handler)
+        {
+            this.AddRoute(route, new PostHandler(handler));
+        }
+
 
         public void AddRoute(string route, RequestHandler handler)
         {

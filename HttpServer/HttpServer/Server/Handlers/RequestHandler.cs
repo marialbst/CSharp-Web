@@ -8,9 +8,9 @@
 
     public abstract class RequestHandler : IRequestHandler
     {
-        private readonly Func<IHttpRequest, IHttpResponse> handlingFunc;
+        private readonly Func<IHttpContext, IHttpResponse> handlingFunc;
 
-        protected RequestHandler(Func<IHttpRequest, IHttpResponse> handlingFunc)
+        protected RequestHandler(Func<IHttpContext, IHttpResponse> handlingFunc)
         {
             CoreValidator.ThrowIfNull(handlingFunc, nameof(handlingFunc));
 
@@ -19,7 +19,7 @@
 
         public IHttpResponse Handle(IHttpContext context)
         {
-            IHttpResponse response = this.handlingFunc(context.Request);
+            IHttpResponse response = this.handlingFunc.Invoke(context);
 
             response.Headers.Add(new HttpHeader("Content-Type", "text/plain"));
 

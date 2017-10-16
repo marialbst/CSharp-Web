@@ -48,9 +48,7 @@
 
         private void ParseRequest(string requestString)
         {
-            string[] requestLines = requestString.Split(
-                new[] { Environment.NewLine }, 
-                StringSplitOptions.RemoveEmptyEntries);
+            string[] requestLines = requestString.Split(Environment.NewLine);
 
             if (!requestLines.Any())
             {
@@ -100,7 +98,7 @@
             for (int i = 1; i < emptyLineAfterHeaders; i++)
             {
                 string currentLine = requestLines[i];
-                string[] headerParts = currentLine.Split(new[] { ':'}, StringSplitOptions.RemoveEmptyEntries);
+                string[] headerParts = currentLine.Split(new[] { ": "}, StringSplitOptions.RemoveEmptyEntries);
 
                 if (headerParts.Length != 2)
                 {
@@ -139,7 +137,8 @@
             {
                 return;
             }
-            this.ParseQuery(formDataLine, this.QueryParameters);
+            //thtia.QueryParameters
+            this.ParseQuery(formDataLine, this.FormData);
         }
 
         private void ParseQuery(string query, IDictionary<string,string> dict)
