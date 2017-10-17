@@ -16,16 +16,21 @@
             CoreValidator.ThrowIfNullOrEmpty(requestString, nameof(requestString));
 
             this.Headers = new HttpHeaderCollection();
+            this.Cookies = new HttpCookieCollection();
             this.FormData = new Dictionary<string, string>();
             this.QueryParameters = new Dictionary<string, string>();
             this.UrlParameters = new Dictionary<string, string>();
-            Console.WriteLine(requestString);
+            
             this.ParseRequest(requestString);
         }
 
         public Dictionary<string, string> FormData { get; private set; }
 
-        public HttpHeaderCollection Headers { get; private set; }
+        public IHttpHeaderCollection Headers { get; private set; }
+
+        public IHttpCookieCollection Cookies { get; private set; }
+
+        public IHttpSession Session { get; set; }
 
         public string Path { get; private set; }
 
@@ -67,14 +72,13 @@
             this.Path = this.Url.Split(new[] { '?', '#' }, StringSplitOptions.RemoveEmptyEntries)[0];
 
             this.ParseHeaders(requestLines);
+            this.ParseCookies();
             this.ParseParameters();
-
-            if (this.Method == HttpRequestMethod.POST)
-            {
-                this.ParseQuery(requestLines[requestLines.Length - 1], this.FormData);
-            }
+            this.ParseFormData(requestLines[requestLines.Length - 1]);
+            this.SetSession();
+            
         }
-        
+
         private HttpRequestMethod ParseRequestMethod(string methodString)
         {
             try
@@ -102,10 +106,9 @@
                     throw new BadRequestException("Invalid header");
                 }
 
-                string key = headerParameters[0];
-                Console.WriteLine(key);
-                string value = headerParameters[1];
-                Console.WriteLine(value);
+                string key = headerParameters[0].Trim();
+                string value = headerParameters[1].Trim();
+
                 HttpHeader header = new HttpHeader(key, value);
                 this.Headers.Add(header);
             }
@@ -113,6 +116,44 @@
             if (!this.Headers.ContainsKey("Host"))
             {
                 throw new BadRequestException("Headers must contain Host");
+            }
+        }
+
+        private void ParseCookies()
+        {
+            if (this.Headers.ContainsKey(HttpHeader.Cookie))
+            {
+                var allCookies = this.Headers.GetHeader(HttpHeader.Cookie);
+
+                foreach (var cookie in allCookies)
+                {
+                    if (!cookie.Value.Contains('='))
+                    {
+                        return;
+                    }
+
+                    string[] cookieParts = cookie
+                        .Value
+                        .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (!cookieParts.Any())
+                    {
+                        continue;
+                    }
+
+                    foreach (var cookiePart in cookieParts)
+                    {
+                        string[] cookieKvp = cookiePart.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        if (cookieKvp.Length == 2)
+                        {
+                            string cookieKey = cookieKvp[0].Trim();
+                            string cookieValue = cookieKvp[1].Trim();
+                            HttpCookie parsedCookie = new HttpCookie(cookieKey, cookieValue, false);
+                            this.Cookies.AddCookie(parsedCookie);
+                        }
+                    }
+                }
             }
         }
 
@@ -150,6 +191,27 @@
                 string queryValue = WebUtility.UrlDecode(queryPair[1]);
 
                 dict.Add(queryKey, queryValue);
+            }
+        }
+
+        private void ParseFormData(string requestLine)
+        {
+            if (this.Method == HttpRequestMethod.POST)
+            {
+                this.ParseQuery(requestLine, this.FormData);
+            }
+        }
+
+        private void SetSession()
+        {
+            string sessionCookieKey = SessionStore.SessionCookieKey;
+
+            if (this.Cookies.ContainsKey(sessionCookieKey))
+            {
+                HttpCookie cookie = this.Cookies.GetCookie(sessionCookieKey);
+                string sessionId = cookie.Value;
+
+                this.Session = SessionStore.Get(sessionId);
             }
         }
     }

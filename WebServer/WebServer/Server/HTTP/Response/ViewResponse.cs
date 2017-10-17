@@ -30,7 +30,6 @@
                 response.AppendLine($"HTTP/1.1 {(int)this.StatusCode} {this.StatusMessage}");
 
                 response.AppendLine(this.Headers.ToString());
-                response.AppendLine();
 
                 if ((int)this.StatusCode < 300 | (int)this.StatusCode > 400)
                 {

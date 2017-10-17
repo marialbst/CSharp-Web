@@ -20,6 +20,9 @@
             
             appRouteConfig
                 .AddRoute("/user/{(?<name>[a-z]+)}", new GetHandler(httpContext => new UserController().Details(httpContext.Request.UrlParameters["name"])));
+
+            appRouteConfig.
+                AddRoute("/testsession", new GetHandler(httpContext => new HomeController().SessionTest(httpContext.Request)));
         }
     }
 }

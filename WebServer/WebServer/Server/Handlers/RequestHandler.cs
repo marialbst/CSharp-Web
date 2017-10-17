@@ -4,6 +4,7 @@
     using Common;
     using Contracts;
     using HTTP.Contracts;
+    using HTTP;
 
     public abstract class RequestHandler : IRequestHandler
     {
@@ -18,10 +19,35 @@
 
         public IHttpResponse Handle(IHttpContext httpContext)
         {
+            string sessionIdToSend = null;
+
+            if (!httpContext.Request.Cookies.ContainsKey(SessionStore.SessionCookieKey))
+            {
+                string sessionId = Guid.NewGuid().ToString();
+
+                httpContext.Request.Session = SessionStore.Get(sessionId);
+
+                sessionIdToSend = sessionId;
+            }   
+
             IHttpResponse httpResponse = this.handlingFunc.Invoke(httpContext);
 
-            httpResponse.AddHeader("Content-Type", "text/html");
+            if (sessionIdToSend != null)
+            {
+                httpResponse.Headers.Add(
+                        HttpHeader.SetCookie,
+                        $"{SessionStore.SessionCookieKey}={sessionIdToSend}; HttpOnly; Path=/");
+            }
 
+            if (!httpResponse.Headers.ContainsKey(HttpHeader.ContentType))
+            {
+                httpResponse.AddHeader(HttpHeader.ContentType, "text/html");
+            }
+
+            foreach (var cookie in httpResponse.Cookies)
+            {
+                httpResponse.AddHeader(HttpHeader.Cookie, cookie.ToString());
+            }
             return httpResponse;           
         }
     }

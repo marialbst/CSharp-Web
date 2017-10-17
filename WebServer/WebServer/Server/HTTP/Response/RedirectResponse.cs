@@ -23,8 +23,6 @@
 
                 response.AppendLine(this.Headers.ToString());
 
-                response.AppendLine();
-
                 return response.ToString();
             }
         }

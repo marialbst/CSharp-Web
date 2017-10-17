@@ -7,7 +7,11 @@
     {
         Dictionary<string, string> FormData { get; }
 
-        HttpHeaderCollection Headers { get; }
+        IHttpHeaderCollection Headers { get; }
+
+        IHttpCookieCollection Cookies { get; }
+
+        IHttpSession Session { get; set; }
 
         string Path { get; }
 

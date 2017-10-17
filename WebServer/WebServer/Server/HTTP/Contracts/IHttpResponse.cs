@@ -6,6 +6,8 @@
     {
         IHttpHeaderCollection Headers { get; }
 
+        IHttpCookieCollection Cookies { get; }
+
         HttpStatusCode StatusCode { get; }
 
         string StatusMessage { get; }
