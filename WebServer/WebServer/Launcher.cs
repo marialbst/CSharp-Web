@@ -1,6 +1,7 @@
 ﻿namespace WebServer
 {
-    using Application;
+    //using Application;
+    using ByTheCakeApp;
     using Server;
     using Server.Contracts;
     using Server.Routing;
@@ -17,7 +18,8 @@
 
         public void Run()
         {
-            IApplication app = new MainApplication();
+            //IApplication app = new MainApplication();
+            IApplication app = new ByTheCakeMainApp();
             IAppRouteConfig appRouteConfig = new AppRouteConfig();
             app.Start(appRouteConfig);
 
