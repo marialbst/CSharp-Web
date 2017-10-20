@@ -4,6 +4,7 @@
     using Server.Contracts;
     using Server.Routing.Contracts;
     using Server.Handlers;
+
     public class ByTheCakeMainApp : IApplication
     {
         public void Start(IAppRouteConfig appRouteConfig)
@@ -28,6 +29,12 @@
 
             appRouteConfig
                 .AddRoute("/calculator", new PostHandler(context => new CalculatorController().CalculatePost(context.Request.FormData["number1"], context.Request.FormData["operator"], context.Request.FormData["number2"])));
+
+            appRouteConfig
+                .AddRoute("/login", new GetHandler(context => new UserController().LoginGet()));
+
+            appRouteConfig
+                .AddRoute("/login", new PostHandler(context => new UserController().LoginPost(context.Request.FormData["username"], context.Request.FormData["password"])));
         }
     }
 }

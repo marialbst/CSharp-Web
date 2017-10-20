@@ -9,7 +9,7 @@
 
     public class CakeController : Controller
     {
-        private string Path = @"ByTheCakeApp\Data\database.csv";
+        private string DbPath = @"ByTheCakeApp\Data\database.csv";
         private static readonly List<Cake> cakes = new List<Cake>();
 
         public IHttpResponse AddGet()
@@ -22,7 +22,12 @@
             Cake cake = new Cake(name, price);
             cakes.Add(cake);
 
-            using(var streamWriter = new StreamWriter(Path, true))
+            if (!File.Exists(DbPath))
+            {
+                File.Create(DbPath);
+            }
+
+            using (var streamWriter = new StreamWriter(DbPath, true))
             {
                 streamWriter.WriteLine($"{name},{price}");
             }
@@ -51,7 +56,7 @@
         {
             var result = new Dictionary<string, string>();
 
-            string[] textFileLines = File.ReadAllLines(Path);
+            string[] textFileLines = File.ReadAllLines(DbPath);
 
             foreach (var line in textFileLines)
             {
