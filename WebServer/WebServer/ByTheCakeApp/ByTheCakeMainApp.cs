@@ -31,10 +31,25 @@
                 .AddRoute("/calculator", new PostHandler(context => new CalculatorController().CalculatePost(context.Request.FormData["number1"], context.Request.FormData["operator"], context.Request.FormData["number2"])));
 
             appRouteConfig
-                .AddRoute("/login", new GetHandler(context => new UserController().LoginGet()));
+                .AddRoute("/login1", new GetHandler(context => new UserController().LoginGet()));
 
             appRouteConfig
-                .AddRoute("/login", new PostHandler(context => new UserController().LoginPost(context.Request.FormData["username"], context.Request.FormData["password"])));
+                .AddRoute("/login1", new PostHandler(context => new UserController().LoginPost(context.Request.FormData["username"], context.Request.FormData["password"])));
+
+            appRouteConfig
+                .AddRoute("/login", new GetHandler(context => new HomeController().Login()));
+
+            appRouteConfig
+                .AddRoute("/login", new PostHandler(context => new HomeController().Login(context.Request.FormData)));
+
+            appRouteConfig
+                .AddRoute("/email", new GetHandler(context => new UserController().EmailGet()));
+
+            appRouteConfig
+                .AddRoute("/email", new PostHandler(context => new UserController().EmailPost(context.Request.FormData)));
+
+            appRouteConfig
+                .AddRoute("/success", new GetHandler(context => new UserController().Success()));
         }
     }
 }
