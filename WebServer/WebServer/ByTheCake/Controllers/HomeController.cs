@@ -17,5 +17,9 @@
             return new ViewResponse(HttpStatusCode.Ok, new AboutView());
         }
 
+        public IHttpResponse Image(string imagePath)
+        {
+            return new ImageResponse(imagePath);
+        }
     }
 }

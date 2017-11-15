@@ -5,6 +5,7 @@
     using Contracts;
     using HTTP.Contracts;
     using HTTP;
+    using HTTP.Response;
 
     public abstract class RequestHandler : IRequestHandler
     {
@@ -31,6 +32,11 @@
             }   
 
             IHttpResponse httpResponse = this.handlingFunc.Invoke(httpContext);
+
+            if (!(httpResponse is ImageResponse))
+            {
+                httpResponse.AddHeader("Content-Type", "text/html");
+            }
 
             if (sessionIdToSend != null)
             {

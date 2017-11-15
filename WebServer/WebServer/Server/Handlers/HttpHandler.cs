@@ -20,13 +20,13 @@
 
         public IHttpResponse Handle(IHttpContext httpContext)
         {
-            //string loginPath = "/login";
+            string loginPath = "/login";
 
-            //if (httpContext.Request.Path != loginPath &&
-            //    !httpContext.Request.Session.IsAuthenticated())
-            //{
-            //    return new RedirectResponse(loginPath);
-            //}
+            if (httpContext.Request.Path != loginPath &&
+                !httpContext.Request.Session.IsAuthenticated())
+            {
+                return new RedirectResponse(loginPath);
+            }
 
             var routesContext = this.serverRouteConfig.Routes[httpContext.Request.Method];
             string path = httpContext.Request.Path;

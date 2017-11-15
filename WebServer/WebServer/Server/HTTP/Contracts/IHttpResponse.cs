@@ -15,5 +15,7 @@
         string Response { get; }
 
         void AddHeader(string key, string value);
+
+        byte[] Data { get; }
     }
 }

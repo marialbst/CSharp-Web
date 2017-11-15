@@ -9,6 +9,8 @@
     using System.Threading.Tasks;
     using Routing.Contracts;
     using System.Text;
+    using Server.HTTP.Response;
+    using Server.Enums;
 
     public class ConnectionHandler
     {
@@ -40,6 +42,11 @@
                 ArraySegment<byte> toBytes = new ArraySegment<byte>(data);
 
                 await this.client.SendAsync(toBytes, SocketFlags.None);
+
+                if (response is ImageResponse && response.StatusCode == HttpStatusCode.Ok)
+                {
+                    await this.client.SendAsync(response.Data, SocketFlags.None);
+                }
 
                 Console.WriteLine("-------------------Request:");
                 Console.WriteLine(request.ToString());

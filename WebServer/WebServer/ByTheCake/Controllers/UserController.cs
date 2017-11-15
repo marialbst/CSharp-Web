@@ -9,6 +9,7 @@
     using System;
     using System.Net.Mail;
     using System.Text;
+    using WebServer.Server.HTTP;
 
     public class UserController
     {
@@ -58,6 +59,22 @@
             }
 
             return new RedirectResponse("/email");
+        }
+
+        public IHttpResponse Login(IHttpRequest req)
+        {
+            if (req.FormData.ContainsKey("username") 
+                && req.FormData.ContainsKey("password")
+                && !string.IsNullOrEmpty(req.FormData["username"].Trim())
+                && !string.IsNullOrEmpty(req.FormData["username"].Trim()))
+            {
+
+                string name = req.FormData["username"].Trim();
+
+                req.Session.Add(SessionStore.CurrentUserKey, name);
+            }
+
+            return new RedirectResponse("/");
         }
 
         public IHttpResponse Email()

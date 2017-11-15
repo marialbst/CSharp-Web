@@ -21,6 +21,8 @@
 
         public abstract string Response { get; }
 
+        public byte[] Data { get; private set; }
+
         public void AddHeader(string key, string value)
         {
             this.Headers.Add(new HttpHeader(key, value));
