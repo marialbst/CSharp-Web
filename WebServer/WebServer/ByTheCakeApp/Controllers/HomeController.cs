@@ -7,6 +7,7 @@
     using Views;
     using System;
     using System.Collections.Generic;
+    using Server.HTTP;
 
     public class HomeController : Controller
     {
@@ -28,8 +29,10 @@
             return new ViewResponse(HttpStatusCode.Ok, new LoginnView());
         }
 
-        public IHttpResponse Login(Dictionary<string, string> data)
+        public IHttpResponse Login(IHttpRequest req)
         {
+            Dictionary<string, string> data = req.FormData;
+
             string username = "";
             string password = "";
 
@@ -43,12 +46,14 @@
                 password = data["password"];
             }
 
-            if (username != Username || password != Password)
+            if (username == "" || password == "")
             {
                 return new ViewResponse(HttpStatusCode.Ok, new LoginnView(username, password));
             }
-   
-            return new RedirectResponse("/email");
+
+            req.Session.Add(SessionStore.CurrentUserKey, username);
+
+            return new RedirectResponse("/");
         }
     }
 }

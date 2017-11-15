@@ -7,6 +7,7 @@
     using Enums;
     using HTTP.Response;
     using Application.Views;
+    using Server.HTTP;
 
     public class HttpHandler : IRequestHandler
     {
@@ -19,6 +20,14 @@
 
         public IHttpResponse Handle(IHttpContext httpContext)
         {
+            //string loginPath = "/login";
+
+            //if (httpContext.Request.Path != loginPath &&
+            //    !httpContext.Request.Session.IsAuthenticated())
+            //{
+            //    return new RedirectResponse(loginPath);
+            //}
+
             var routesContext = this.serverRouteConfig.Routes[httpContext.Request.Method];
             string path = httpContext.Request.Path;
 

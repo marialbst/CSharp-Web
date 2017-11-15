@@ -6,6 +6,7 @@
     using Server.HTTP.Contracts;
     using System.Text;
     using System.IO;
+    using System;
 
     public class CakeController : Controller
     {
@@ -18,27 +19,24 @@
         }
 
         public IHttpResponse AddPost(string name, string price)
-        {
-            Cake cake = new Cake(name, price);
-            cakes.Add(cake);
-
+        {   
             if (!File.Exists(DbPath))
             {
                 File.Create(DbPath);
             }
 
+            var streamReader = new StreamReader(DbPath);
+            var id = streamReader.ReadToEnd().Split(Environment.NewLine).Length;
+            streamReader.Dispose();
+
             using (var streamWriter = new StreamWriter(DbPath, true))
             {
-                streamWriter.WriteLine($"{name},{price}");
+                Cake cake = new Cake(id, name, price);
+                cakes.Add(cake);
+                streamWriter.WriteLine($"{id},{name},{price}");
             }
 
-            var result = new Dictionary<string, string>
-            {
-                ["name"] = name,
-                ["price"] = price
-            };
-
-            return this.FileViewResponse(@"cakes\add", result);
+            return this.FileViewResponse(@"cakes\add", cakes);
         }
 
         public IHttpResponse Search(Dictionary<string, string> urlParameters)
@@ -52,9 +50,9 @@
             return this.FileViewResponse(@"cakes\search");
         }
 
-        private Dictionary<string, string> SearchResults(string name)
+        private List<Cake> SearchResults(string name)
         {
-            var result = new Dictionary<string, string>();
+            var result = new List<Cake>();
 
             string[] textFileLines = File.ReadAllLines(DbPath);
 
@@ -67,12 +65,12 @@
 
                 string[] cakeParams = line.Split(',');
 
-                if (cakeParams.Length != 2)
+                if (cakeParams.Length != 3)
                 {
                     continue;
                 }
 
-                result.Add(cakeParams[0], $"${cakeParams[1]}");
+                result.Add(new Cake(int.Parse(cakeParams[0]),cakeParams[1], $"{cakeParams[2]}"));
             }
 
             return result;

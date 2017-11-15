@@ -40,7 +40,7 @@
                 .AddRoute("/login", new GetHandler(context => new HomeController().Login()));
 
             appRouteConfig
-                .AddRoute("/login", new PostHandler(context => new HomeController().Login(context.Request.FormData)));
+                .AddRoute("/login", new PostHandler(context => new HomeController().Login(context.Request)));
 
             appRouteConfig
                 .AddRoute("/email", new GetHandler(context => new UserController().EmailGet()));

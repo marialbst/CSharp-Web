@@ -20,20 +20,21 @@
             background-color: #F94F80;
         }
 
-        .red{
+        .red {
             color: #ff0000;
         }
-
     </style>
 </head>
 <body>
-    {{{user}}}
-    {{{content}}}
-    <hr />
-    <footer>
-        <p>
-            &copy; All Rights Reserved.
-        </p>
-    </footer>
+    <p>
+        <a href="/">Back To Home</a>
+    </p>
+    <form method="GET">
+        <input type="text" placeholder="Enter name to search" name="name" />
+        <input type="submit" value="Search" />
+    </form>
+    <p>
+        {{{result}}}
+    </p>
 </body>
 </html>

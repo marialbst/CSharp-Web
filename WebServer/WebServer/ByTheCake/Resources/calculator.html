@@ -20,20 +20,23 @@
             background-color: #F94F80;
         }
 
-        .red{
+        .red {
             color: #ff0000;
         }
-
     </style>
 </head>
 <body>
-    {{{user}}}
-    {{{content}}}
-    <hr />
-    <footer>
-        <p>
-            &copy; All Rights Reserved.
-        </p>
-    </footer>
+    <h2>Calculator App</h2>
+
+    <form method="post">
+        <input type="text" name="number1" placeholder="Enter first number" />
+        <input type="text" name="operator" placeholder="Enter math operator" />
+        <input type="text" name="number2" placeholder="Enter second number" />
+        <input type="submit" value="Calculate" />
+    </form>
+
+    <p>
+        {{{result}}}
+    </p>
 </body>
 </html>

@@ -46,7 +46,7 @@
 
         public bool IsAuthenticated()
         {
-            return false;
+            return this.values.ContainsKey(SessionStore.CurrentUserKey);
         }
     }
 }
