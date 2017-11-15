@@ -61,6 +61,7 @@
             return new RedirectResponse("/email");
         }
 
+        //Post for State Management exercises
         public IHttpResponse Login(IHttpRequest req)
         {
             if (req.FormData.ContainsKey("username") 

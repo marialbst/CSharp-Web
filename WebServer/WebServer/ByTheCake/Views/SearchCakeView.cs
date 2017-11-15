@@ -10,6 +10,7 @@
     {
         private const string Path = @"ByTheCake/Resources/search.html";
         private const string ResultPlaceholder = "{{{result}}}";
+        private const string ProductsPlaceholder = "{{{products}}}";
 
         private string type;
         private List<Cake> cakes;
@@ -47,7 +48,8 @@
 
                     foreach (var cake in cakes)
                     {
-                        result.AppendLine($"<div>{cake.Name} ${cake.Price:f2}</div>");
+                        result.Append($"<span>{cake.Name} ${cake.Price:f2}</span>");
+                        result.AppendLine($"<button>Order</button><br />");
                     }
 
                     replacement = result.ToString();
@@ -57,8 +59,9 @@
                     replacement = "<h3 class=\"red\">No cakes found by given criteria</h3>";
                 }
             }
-
-            return html.Replace(ResultPlaceholder, replacement);
+            //ToDo replace with real cart count
+            string res = html.Replace(ProductsPlaceholder, "0 products");
+            return res.Replace(ResultPlaceholder, replacement);
         }
     }
 }
