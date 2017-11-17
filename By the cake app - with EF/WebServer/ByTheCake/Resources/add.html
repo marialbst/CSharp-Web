@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="description" content="Buy the cake in By the Cake" />
+    <meta name="keywords" content="cakes, buy" />
+    <meta name="author" content="Maria Stoeva" />
+    <title>By The Cake</title>
+    <style>
+        img {
+            width: 200px;
+            height: 100px;
+        }
+
+        footer p {
+            text-align: center;
+        }
+
+        pre {
+            background-color: #F94F80;
+        }
+
+        .red {
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/">Back to Home</a>
+        <a href="/logout">Log Out</a>
+    </header>
+    <form method="POST">
+        <label for="name">Name:</label>
+        <input type="text" name="name" placeholder="Enter name" />
+        <label for="price">Price:</label>
+        <input type="text" name="price" placeholder="Enter price" />
+        <input type="submit" value="Add Cake" />
+    </form>
+    {{{result}}}
+</body>
+</html>
