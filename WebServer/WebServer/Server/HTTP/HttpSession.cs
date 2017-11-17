@@ -48,5 +48,15 @@
         {
             return this.values.ContainsKey(SessionStore.CurrentUserKey);
         }
+
+        public bool Contains(string key)
+        {
+            return this.values.ContainsKey(key);
+        }
+
+        public T Get<T>(string key)
+        {
+            return (T)this.Get(key);
+        }
     }
 }

@@ -13,16 +13,22 @@
         private const string ProductsPlaceholder = "{{{products}}}";
 
         private string type;
+        private string wordToSearch;
+        private int cartProductsCount;
+
         private List<Cake> cakes;
 
-        public SearchCakeView(string type = "")
+        public SearchCakeView(int products, string type = "")
         {
             this.type = type;
+            this.cartProductsCount = products;
         }
         
-        public SearchCakeView(List<Cake> cakes)
+        public SearchCakeView(int products, List<Cake> cakes, string wordToSearch)
         {
             this.cakes = cakes;
+            this.wordToSearch = wordToSearch;
+            this.cartProductsCount = products;
         }
 
         public string View()
@@ -48,8 +54,14 @@
 
                     foreach (var cake in cakes)
                     {
-                        result.Append($"<span>{cake.Name} ${cake.Price:f2}</span>");
-                        result.AppendLine($"<button>Order</button><br />");
+                        if (!string.IsNullOrEmpty(this.wordToSearch))
+                        {
+                            result.AppendLine($"<div>{cake.Name} ${cake.Price:f2}<a href=\"/order?id={cake.Id}&returnUrl={this.wordToSearch}\"><button>Order</button></a></div>");
+                        }
+                        else
+                        {
+                            result.AppendLine($"<div>{cake.Name} ${cake.Price:f2}<a href=\"/order?id={cake.Id}\"><button>Order</button></a></div>");
+                        }
                     }
 
                     replacement = result.ToString();
@@ -60,7 +72,8 @@
                 }
             }
             //ToDo replace with real cart count
-            string res = html.Replace(ProductsPlaceholder, "0 products");
+            string products = this.cartProductsCount != 1 ? $"{cartProductsCount} products" : $"{cartProductsCount} product";
+            string res = html.Replace(ProductsPlaceholder, products);
             return res.Replace(ResultPlaceholder, replacement);
         }
     }

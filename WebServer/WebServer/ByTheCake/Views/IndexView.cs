@@ -6,10 +6,19 @@
     public class IndexView : IView
     {
         private const string Path = @"ByTheCake/Resources/index.html";
+        private const string UserPlaceholder = "{{{user}}}";
+
+        private string username;
+
+        public IndexView(string username)
+        {
+            this.username = username;
+        }
 
         public string View()
         {
-            return File.ReadAllText(Path);
+            string html = File.ReadAllText(Path);
+            return html.Replace(UserPlaceholder, username);
         }
     }
 }

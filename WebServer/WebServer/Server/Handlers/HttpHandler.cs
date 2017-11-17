@@ -22,8 +22,8 @@
         {
             string loginPath = "/login";
 
-            if (httpContext.Request.Path != loginPath &&
-                !httpContext.Request.Session.IsAuthenticated())
+            if (httpContext.Request.Session == null || (httpContext.Request.Path != loginPath &&
+                !httpContext.Request.Session.IsAuthenticated()))
             {
                 return new RedirectResponse(loginPath);
             }

@@ -13,7 +13,7 @@
 
         public static void SaveCake(Cake cake)
         {
-            File.AppendAllText(DbPath, $"{cake.Name},{cake.Price}{Environment.NewLine}");
+            File.AppendAllText(DbPath, $"{cake.Id},{cake.Name},{cake.Price}{Environment.NewLine}");
         }
 
         public static List<Cake> SearchCakes(string word)
@@ -25,37 +25,49 @@
             {
                 string[] cakeStr = line.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-                if (cakeStr.Length != 2)
+                if (cakeStr.Length != 3)
                 {
                     continue;
                 }
 
-                if (cakeStr[0].ToLower().Contains(word.ToLower()))
+                if (cakeStr[1].ToLower().Contains(word.ToLower()))
                 {
-                    result.Add(new Cake(cakeStr[0], cakeStr[1]));
+                    result.Add(new Cake(int.Parse(cakeStr[0]),cakeStr[1], cakeStr[2]));
                 }
             }
 
             return result;
         }
 
+        public static int GetCurrentId()
+        {
+            return File.ReadAllText(DbPath).Split(Environment.NewLine).Length;
+        }
+
         public static List<Cake> ListAllCakes()
         {
             string[] cakesFromFile = File.ReadAllText(DbPath).Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
-
+            
             foreach (var line in cakesFromFile)
             {
                 string[] cakeStr = line.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-                if (cakeStr.Length != 2)
+                if (cakeStr.Length != 3)
                 {
                     continue;
                 }
 
-                    cakes.Add(new Cake(cakeStr[0], cakeStr[1]));
+                cakes.Add(new Cake(int.Parse(cakeStr[0]), cakeStr[1], cakeStr[2]));
             }
 
             return cakes;
+        }
+
+        public static Cake GetCakeById(int id)
+        {
+            cakes = ListAllCakes();
+
+            return cakes.FirstOrDefault(c => c.Id == id);
         }
     }
 }

@@ -10,7 +10,7 @@
         public void Start(IAppRouteConfig appRouteConfig)
         {
             appRouteConfig.
-                AddRoute("/", new GetHandler(ctx => new HomeController().Index()));
+                AddRoute("/", new GetHandler(ctx => new HomeController().Index(ctx.Request.Session)));
 
             appRouteConfig.
                 AddRoute("/about", new GetHandler(ctx => new HomeController().About()));
@@ -22,7 +22,7 @@
                 AddRoute("/add", new PostHandler(ctx => new CakesController().Add(ctx.Request.FormData)));
 
             appRouteConfig.
-                AddRoute("/search", new GetHandler(ctx => new CakesController().Search(ctx.Request.QueryParameters)));
+                AddRoute("/search", new GetHandler(ctx => new CakesController().Search(ctx.Request)));
 
             appRouteConfig.
                 AddRoute("/calculator", new GetHandler(ctx => new CalculatorController().Calculate()));
@@ -59,6 +59,21 @@
 
             appRouteConfig
                 .AddRoute(@"/Images/{(?<imagePath>[a-zA-Z0-9_]+\.(jpg|png))}", new GetHandler(ctx => new HomeController().Image(ctx.Request.UrlParameters["imagePath"])));
+
+            appRouteConfig.
+                AddRoute("/order", new GetHandler(ctx => new CakesController().Order(ctx.Request)));
+
+            appRouteConfig.
+                AddRoute("/cart", new GetHandler(ctx => new CakesController().Cart(ctx.Request.Session)));
+
+            appRouteConfig.
+                AddRoute("/cart", new PostHandler(ctx => new CakesController().Cart(ctx.Request)));
+
+            appRouteConfig.
+                AddRoute("/success", new GetHandler(ctx => new CakesController().Success(ctx.Request)));
+
+            appRouteConfig.
+                 AddRoute("/logout", new GetHandler(ctx => new UserController().Logout(ctx.Request.Session)));
         }
     }
 }

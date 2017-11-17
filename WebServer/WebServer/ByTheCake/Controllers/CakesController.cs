@@ -6,6 +6,7 @@
     using Server.HTTP.Contracts;
     using Server.HTTP.Response;
     using System.Collections.Generic;
+    using System;
 
     public class CakesController
     {
@@ -33,24 +34,104 @@
             return new ViewResponse(HttpStatusCode.Ok, new AddCakeView(cake));
         }
 
-        public IHttpResponse Search()
+        public IHttpResponse Search(IHttpSession session)
         {
-            return new ViewResponse(HttpStatusCode.Ok, new SearchCakeView());
+            int productsCount = this.GetProductsCount(session);
+
+            return new ViewResponse(HttpStatusCode.Ok, new SearchCakeView(productsCount));
         }
 
-        public IHttpResponse Search(Dictionary<string, string> queryPar)
+        public IHttpResponse Search(IHttpRequest req)
         {
+            Dictionary<string, string> queryPar = req.QueryParameters;
+            IHttpSession session = req.Session;
+
+            int productsCount = this.GetProductsCount(session);
+
             if (!queryPar.ContainsKey("name"))
             {
-                return new ViewResponse(HttpStatusCode.Ok, new SearchCakeView());
+                return new ViewResponse(HttpStatusCode.Ok, new SearchCakeView(productsCount));
             }
 
             if (!string.IsNullOrWhiteSpace(queryPar["name"]))
             {
-                return new ViewResponse(HttpStatusCode.Ok, new SearchCakeView(CakeList.SearchCakes(queryPar["name"])));
+                return new ViewResponse(HttpStatusCode.Ok, new SearchCakeView(productsCount, CakeList.SearchCakes(queryPar["name"]), queryPar["name"]));
             }
 
-            return new ViewResponse(HttpStatusCode.Ok, new SearchCakeView("error"));
+            return new ViewResponse(HttpStatusCode.Ok, new SearchCakeView(productsCount,"error"));
+        }
+
+        public IHttpResponse Order(IHttpRequest request)
+        {
+            if (request.QueryParameters.ContainsKey("id"))
+            {
+                int id = int.Parse(request.QueryParameters["id"]);
+
+                Cake cake = CakeList.GetCakeById(id);
+                Cart cart = this.GetCartFromSession(request.Session);             
+
+                if (cake != null)
+                {
+                    cart.Cakes.Add(cake);
+                }
+            }
+
+            string returnPath = "/search";
+
+            string returnUrl = request.QueryParameters["returnUrl"];
+
+            if (!string.IsNullOrEmpty(returnUrl))
+            {
+                returnPath = $"{returnPath}?name={returnUrl}";
+            }
+
+            return new RedirectResponse(returnPath);
+        }
+
+        public IHttpResponse Cart(IHttpSession session)
+        {
+            Cart cart = this.GetCartFromSession(session);
+            return new ViewResponse(HttpStatusCode.Ok, new CartView(cart));
+        }
+
+        public IHttpResponse Cart(IHttpRequest request)
+        {
+            return new RedirectResponse("/success");
+        }
+
+        public IHttpResponse Success(IHttpRequest request)
+        {
+            Cart cart = this.GetCartFromSession(request.Session);
+
+            if (cart.Cakes.Count > 0)
+            {
+                cart.Cakes.Clear();
+                return new ViewResponse(HttpStatusCode.Ok, new SuccessView("Successfully finished order!"));
+            }
+
+            return new ViewResponse(HttpStatusCode.Ok, new SuccessView("You can not finish this order. Your cart is empty!"));
+        }
+
+        private int GetProductsCount(IHttpSession session)
+        {
+            int productsCount = 0;
+            
+            if (session.Contains("shoppingCart"))
+            {
+                Cart cart = session.Get<Cart>("shoppingCart");
+                productsCount = cart.Cakes.Count;
+            }
+            return productsCount;
+        }
+
+        private Cart GetCartFromSession(IHttpSession session)
+        {
+            if (!session.Contains("shoppingCart"))
+            {
+                session.Add("shoppingCart", new Cart());
+            }
+
+            return session.Get<Cart>("shoppingCart");
         }
     }
 }

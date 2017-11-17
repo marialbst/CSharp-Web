@@ -139,6 +139,13 @@
             return new RedirectResponse("/greeting");
         }
 
+        public IHttpResponse Logout(IHttpSession session)
+        {
+            session.Clear();
+
+            return new RedirectResponse("/login");
+        }
+
         private void SendEmail(string recipient, string subject, string message)
         {
             SmtpClient client = new SmtpClient();
