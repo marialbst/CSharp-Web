@@ -54,22 +54,22 @@
                  .AddRoute("/logout", new PostHandler(ctx => new UserController().Logout(ctx.Request)));
 
             appRouteConfig
-                .AddRoute("/add", new GetHandler(ctx => new CakesController().Add()));
+                .AddRoute("/add", new GetHandler(ctx => new ProductsController().Add()));
 
             appRouteConfig
-                .AddRoute("/add", new PostHandler(ctx => new CakesController().Add(ctx.Request.FormData["name"], ctx.Request.FormData["price"])));
+                .AddRoute("/add", new PostHandler(ctx => new ProductsController().Add(ctx.Request.FormData["name"], ctx.Request.FormData["price"])));
 
            appRouteConfig
-                .AddRoute("/order", new GetHandler(ctx => new CakesController().Order(ctx.Request)));           
+                .AddRoute("/order", new GetHandler(ctx => new ProductsController().Order(ctx.Request)));           
 
             appRouteConfig
-                .AddRoute("/cart", new GetHandler(ctx => new CakesController().ShowCart(ctx.Request)));
+                .AddRoute("/cart", new GetHandler(ctx => new ProductsController().ShowCart(ctx.Request)));
 
             appRouteConfig
-                .AddRoute("/search", new GetHandler(ctx => new CakesController().Search(ctx.Request)));
+                .AddRoute("/search", new GetHandler(ctx => new ProductsController().Search(ctx.Request)));
 
             appRouteConfig
-                .AddRoute("/success", new PostHandler(ctx => new CakesController().Success(ctx.Request)));
+                .AddRoute("/success", new PostHandler(ctx => new ProductsController().Success(ctx.Request)));
 
            appRouteConfig
                .AddRoute(@"/Images/{(?<imagePath>[a-zA-Z0-9_]+\.(jpg|png))}",
