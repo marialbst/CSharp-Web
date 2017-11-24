@@ -8,10 +8,13 @@
         public int Id { get; set; }
 
         [Required]
+        [MaxLength(30)]
         public string Name { get; set; }
 
         public decimal Price { get; set; }
 
+        [Required]
+        [MaxLength(2000)]
         public string ImageUrl { get; set; }
 
         public IEnumerable<OrderProduct> Orders { get; set; } = new List<OrderProduct>();

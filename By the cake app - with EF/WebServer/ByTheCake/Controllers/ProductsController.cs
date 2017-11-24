@@ -1,16 +1,17 @@
 ﻿namespace WebServer.ByTheCake.Controllers
 {
     using ViewModels;
+    using ViewModels.Products;
     using Server.HTTP.Contracts;
     using Server.HTTP.Response;
     using System;
     using System.Linq;
 
-    public class CakesController : Controller
+    public class ProductsController : Controller
     {
         private readonly CakeList cakeList;
 
-        public CakesController()
+        public ProductsController()
         {
             this.cakeList = new CakeList();
         }
@@ -18,18 +19,28 @@
         public IHttpResponse Add()
         {
             this.ViewData["showResult"] = "none";
-            return this.FileViewResponse(@"Cakes\add");
+            return this.FileViewResponse(@"Products\add");
         }
 
-        public IHttpResponse Add(string name, string price)
+        public IHttpResponse Add(AddProductViewModel model)
         {
-            this.cakeList.Add(name, price);
+            if(model.Name.Length < 3 
+                || model.ImageUrl.Length < 3 
+                || model.Name.Length > 30 
+                || model.ImageUrl.Length > 2000)
+            {
+                this.ViewData["showError"] = "block red";
+                this.ViewData["error"] = "This username is already taken<br />";
 
-            this.ViewData["name"] = name;
-            this.ViewData["price"] = price;
-            this.ViewData["showResult"] = "block";
+                return this.FileViewResponse(@"Products\add");
+            }
+            //this.cakeList.Add(name, price);
 
-            return this.FileViewResponse(@"Cakes\add");
+            //this.ViewData["name"] = name;
+            //this.ViewData["price"] = price;
+            //this.ViewData["showResult"] = "block";
+
+            return this.FileViewResponse(@"Products\add");
         }
 
         public IHttpResponse Search(IHttpRequest req)
@@ -75,7 +86,7 @@
 
             this.ViewData["products"] = $"{totalProducts} {totalProductsText}";
 
-            return this.FileViewResponse(@"Cakes\search");
+            return this.FileViewResponse(@"Products\search");
         }
 
         public IHttpResponse Order(IHttpRequest request)
@@ -121,7 +132,7 @@
                 this.ViewData["price"] = $"${price:f2}";
             }
 
-            return this.FileViewResponse(@"Cakes\cart");
+            return this.FileViewResponse(@"Products\cart");
         }
 
         public IHttpResponse Success(IHttpRequest req)
@@ -139,7 +150,7 @@
                 this.ViewData["message"] = "No cakes in the cart!";
             }
 
-            return this.FileViewResponse(@"Cakes\success");
+            return this.FileViewResponse(@"Products\success");
         }
     }
 }

@@ -4,8 +4,14 @@
     <input type="text" name="name" placeholder="Enter name" />
     <label for="price">Price:</label>
     <input type="text" name="price" placeholder="Enter price" />
+    <label for="url">Image url:</label>
+    <input type="text" name="url" placeholder="Enter image url" />
     <input type="submit" value="Add Cake" />
 </form>
+
+<div class="{{{showError}}} red">
+    {{{error}}}
+</div>
 
 <div class="{{{showResult}}}">
     <div> name: {{{name}}}</div> 
