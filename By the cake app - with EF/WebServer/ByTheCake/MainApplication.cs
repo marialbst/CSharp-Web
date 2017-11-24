@@ -23,35 +23,53 @@
             appRouteConfig
                 .AddRoute("/", new GetHandler(ctx => new HomeController().Index()));
 
-            appRouteConfig.
-                AddRoute("/about", new GetHandler(ctx => new HomeController().About()));
+            appRouteConfig
+                .AddRoute("/about", new GetHandler(ctx => new HomeController().About()));
 
-            appRouteConfig.
-                AddRoute("/login", new GetHandler(ctx => new UserController().Login()));
+            appRouteConfig
+                .AddRoute("/register", new GetHandler(ctx => new UserController().Register()));
 
-            appRouteConfig.
-                AddRoute("/login", new PostHandler(ctx => new UserController().Login(ctx.Request)));
+            appRouteConfig
+                .AddRoute("/register", new PostHandler(ctx => new UserController().Register(ctx.Request, new RegisterUserViewModel()
+                    {
+                        Username = ctx.Request.FormData["username"],
+                        Password = ctx.Request.FormData["password"],
+                        ConfirmPassword = ctx.Request.FormData["conf-password"]
+                    })));
 
-            appRouteConfig.
-                 AddRoute("/logout", new PostHandler(ctx => new UserController().Logout(ctx.Request)));
+            appRouteConfig
+                .AddRoute("/profile", new GetHandler(ctx => new UserController().Profile(ctx.Request)));
 
-            appRouteConfig.
-                AddRoute("/add", new GetHandler(ctx => new CakesController().Add()));
+            appRouteConfig
+                .AddRoute("/login", new GetHandler(ctx => new UserController().Login()));
 
-            appRouteConfig.
-                AddRoute("/add", new PostHandler(ctx => new CakesController().Add(ctx.Request.FormData["name"], ctx.Request.FormData["price"])));
+            appRouteConfig
+                .AddRoute("/login", new PostHandler(ctx => new UserController().Login(ctx.Request, new LoginUserViewModel()
+                    {
+                        Username = ctx.Request.FormData["username"],
+                        Password = ctx.Request.FormData["password"]
+                    })));
 
-           appRouteConfig.
-                AddRoute("/order", new GetHandler(ctx => new CakesController().Order(ctx.Request)));           
+            appRouteConfig
+                 .AddRoute("/logout", new PostHandler(ctx => new UserController().Logout(ctx.Request)));
 
-            appRouteConfig.
-                AddRoute("/cart", new GetHandler(ctx => new CakesController().ShowCart(ctx.Request)));
+            appRouteConfig
+                .AddRoute("/add", new GetHandler(ctx => new CakesController().Add()));
 
-            appRouteConfig.
-                AddRoute("/search", new GetHandler(ctx => new CakesController().Search(ctx.Request)));
+            appRouteConfig
+                .AddRoute("/add", new PostHandler(ctx => new CakesController().Add(ctx.Request.FormData["name"], ctx.Request.FormData["price"])));
 
-            appRouteConfig.
-                AddRoute("/success", new PostHandler(ctx => new CakesController().Success(ctx.Request)));
+           appRouteConfig
+                .AddRoute("/order", new GetHandler(ctx => new CakesController().Order(ctx.Request)));           
+
+            appRouteConfig
+                .AddRoute("/cart", new GetHandler(ctx => new CakesController().ShowCart(ctx.Request)));
+
+            appRouteConfig
+                .AddRoute("/search", new GetHandler(ctx => new CakesController().Search(ctx.Request)));
+
+            appRouteConfig
+                .AddRoute("/success", new PostHandler(ctx => new CakesController().Success(ctx.Request)));
 
            appRouteConfig
                .AddRoute(@"/Images/{(?<imagePath>[a-zA-Z0-9_]+\.(jpg|png))}",

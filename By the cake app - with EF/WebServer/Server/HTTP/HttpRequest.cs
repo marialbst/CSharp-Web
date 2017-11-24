@@ -176,11 +176,11 @@
                 return;
             }
 
-            string[] queryPairs = query.Split(new[] { '&' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] queryPairs = query.Split(new[] { '&' });
 
             foreach (var kvp in queryPairs)
             {
-                string[] queryPair = kvp.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] queryPair = kvp.Split(new[] { '=' });
 
                 if (queryPair.Length != 2)
                 {

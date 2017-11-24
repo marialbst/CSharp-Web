@@ -22,6 +22,8 @@
             //IApplication app = new MainApplication();
             //IApplication app = new ByTheCakeMainApp();
             IApplication app = new MainApplication();
+            app.InitializeDb();
+
             IAppRouteConfig appRouteConfig = new AppRouteConfig();
             app.Start(appRouteConfig);
 

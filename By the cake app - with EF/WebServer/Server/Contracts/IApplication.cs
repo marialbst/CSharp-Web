@@ -5,5 +5,7 @@
     public interface IApplication
     {
         void Start(IAppRouteConfig appRouteConfig);
+
+        void InitializeDb();
     }
 }

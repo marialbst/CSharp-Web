@@ -1,4 +1,4 @@
-﻿namespace WebServer.ByTheCake.Data.Models
+﻿namespace WebServer.ByTheCake.Models
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
