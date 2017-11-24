@@ -30,7 +30,7 @@
                 || model.ImageUrl.Length > 2000)
             {
                 this.ViewData["showError"] = "block red";
-                this.ViewData["error"] = "This username is already taken<br />";
+                this.ViewData["error"] = "Invaid cake data";
 
                 return this.FileViewResponse(@"Products\add");
             }
