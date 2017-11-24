@@ -22,7 +22,7 @@
         {
             string loginPath = "/login";
 
-            if (httpContext.Request.Session == null || (httpContext.Request.Path != loginPath &&
+            if (httpContext.Request.Path != loginPath && (httpContext.Request.Session == null ||
                 !httpContext.Request.Session.IsAuthenticated()))
             {
                 return new RedirectResponse(loginPath);

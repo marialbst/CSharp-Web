@@ -10,7 +10,13 @@
     {
         public IHttpResponse Index(IHttpSession session)
         {
-            return new ViewResponse(HttpStatusCode.Ok, new IndexView(session.Get(SessionStore.CurrentUserKey).ToString()));
+            string user = "";
+
+            if (session.Contains(SessionStore.CurrentUserKey))
+            {
+                user = session.Get(SessionStore.CurrentUserKey).ToString();
+            }
+            return new ViewResponse(HttpStatusCode.Ok, new IndexView(user));
         }
 
         public IHttpResponse About()

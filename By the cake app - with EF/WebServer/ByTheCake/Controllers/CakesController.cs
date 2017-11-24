@@ -1,79 +1,94 @@
 ﻿namespace WebServer.ByTheCake.Controllers
 {
-    using Models;
-    using Views;
-    using Server.Enums;
+    using ViewModels;
     using Server.HTTP.Contracts;
     using Server.HTTP.Response;
-    using System.Collections.Generic;
     using System;
+    using System.Linq;
 
-    public class CakesController
+    public class CakesController : Controller
     {
+        private readonly CakeList cakeList;
+
+        public CakesController()
+        {
+            this.cakeList = new CakeList();
+        }
+
         public IHttpResponse Add()
         {
-            return new ViewResponse(HttpStatusCode.Ok, new AddCakeView());
+            this.ViewData["showResult"] = "none";
+            return this.FileViewResponse(@"Cakes\add");
         }
 
-        public IHttpResponse Add(Dictionary<string, string> formData)
+        public IHttpResponse Add(string name, string price)
         {
-            if (!formData.ContainsKey("name") || !formData.ContainsKey("price"))
-            {
-                return new ViewResponse(HttpStatusCode.Ok, new AddCakeView("error"));
-            }
+            this.cakeList.Add(name, price);
 
-            if (string.IsNullOrWhiteSpace(formData["name"]) || string.IsNullOrWhiteSpace(formData["price"]))
-            {
-                return new ViewResponse(HttpStatusCode.Ok, new AddCakeView("error"));
-            }
+            this.ViewData["name"] = name;
+            this.ViewData["price"] = price;
+            this.ViewData["showResult"] = "block";
 
-            Cake cake = new Cake(formData["name"], formData["price"]);
-
-            CakeList.SaveCake(cake);
-
-            return new ViewResponse(HttpStatusCode.Ok, new AddCakeView(cake));
-        }
-
-        public IHttpResponse Search(IHttpSession session)
-        {
-            int productsCount = this.GetProductsCount(session);
-
-            return new ViewResponse(HttpStatusCode.Ok, new SearchCakeView(productsCount));
+            return this.FileViewResponse(@"Cakes\add");
         }
 
         public IHttpResponse Search(IHttpRequest req)
         {
-            Dictionary<string, string> queryPar = req.QueryParameters;
-            IHttpSession session = req.Session;
+            const string searchKey = "name";
+            var queryParameters = req.QueryParameters;
 
-            int productsCount = this.GetProductsCount(session);
+            this.ViewData["result"] = string.Empty;
+            this.ViewData["name"] = string.Empty;
 
-            if (!queryPar.ContainsKey("name"))
+            if (queryParameters.ContainsKey(searchKey))
             {
-                return new ViewResponse(HttpStatusCode.Ok, new SearchCakeView(productsCount));
+                string search = queryParameters[searchKey];
+                this.ViewData["name"] = search;
+
+                var foundCakes = this.cakeList
+                    .AllCakes()
+                    .Where(c => c.Name.ToLower().Contains(search.ToLower()))
+                    .Select(c => $"<div>{c.Name} ${c.Price:f2}<a href=\"/order?id={c.Id}&returnUrl={search}\"><button>Order</button></a></div>");
+
+                var result = string.Empty;
+
+                if (foundCakes.Any())
+                {
+                    result = string.Join(Environment.NewLine, foundCakes);
+                }
+                else
+                {
+                    result = "No cakes found";
+                }
+
+                this.ViewData["result"] = result;
+            }
+            else
+            {
+                this.ViewData["result"] = "Please, enter search term";
             }
 
-            if (!string.IsNullOrWhiteSpace(queryPar["name"]))
-            {
-                return new ViewResponse(HttpStatusCode.Ok, new SearchCakeView(productsCount, CakeList.SearchCakes(queryPar["name"]), queryPar["name"]));
-            }
+            var shoppingCart = req.Session.Get<Cart>(Cart.SessionKey);
 
-            return new ViewResponse(HttpStatusCode.Ok, new SearchCakeView(productsCount,"error"));
+            var totalProducts = shoppingCart.Cakes.Count;
+            var totalProductsText = totalProducts != 1 ? "products" : "product";
+
+            this.ViewData["products"] = $"{totalProducts} {totalProductsText}";
+
+            return this.FileViewResponse(@"Cakes\search");
         }
 
         public IHttpResponse Order(IHttpRequest request)
         {
-            if (request.QueryParameters.ContainsKey("id"))
+            var id = int.Parse(request.QueryParameters["id"]);
+
+            var cake = this.cakeList.GetCakeById(id);
+
+            var cart = request.Session.Get<Cart>(Cart.SessionKey);
+
+            if (cake != null)
             {
-                int id = int.Parse(request.QueryParameters["id"]);
-
-                Cake cake = CakeList.GetCakeById(id);
-                Cart cart = this.GetCartFromSession(request.Session);             
-
-                if (cake != null)
-                {
-                    cart.Cakes.Add(cake);
-                }
+                cart.Cakes.Add(cake);
             }
 
             string returnPath = "/search";
@@ -88,50 +103,43 @@
             return new RedirectResponse(returnPath);
         }
 
-        public IHttpResponse Cart(IHttpSession session)
+        public IHttpResponse ShowCart(IHttpRequest req)
         {
-            Cart cart = this.GetCartFromSession(session);
-            return new ViewResponse(HttpStatusCode.Ok, new CartView(cart));
+            var cart = req.Session.Get<Cart>(Cart.SessionKey);
+
+            if (!cart.Cakes.Any())
+            {
+                this.ViewData["products"] = "No items in your cart";
+                this.ViewData["price"] = "$0.00";
+            }
+            else
+            {
+                var products = cart.Cakes.Select(c => $"<div>{c.Name} - ${c.Price:f2}</div><br />");
+                var price = cart.TotalCost();
+
+                this.ViewData["products"] = string.Join(Environment.NewLine, products);
+                this.ViewData["price"] = $"${price:f2}";
+            }
+
+            return this.FileViewResponse(@"Cakes\cart");
         }
 
-        public IHttpResponse Cart(IHttpRequest request)
+        public IHttpResponse Success(IHttpRequest req)
         {
-            return new RedirectResponse("/success");
-        }
 
-        public IHttpResponse Success(IHttpRequest request)
-        {
-            Cart cart = this.GetCartFromSession(request.Session);
+            var cart = req.Session.Get<Cart>(Cart.SessionKey);
 
             if (cart.Cakes.Count > 0)
             {
                 cart.Cakes.Clear();
-                return new ViewResponse(HttpStatusCode.Ok, new SuccessView("Successfully finished order!"));
+                this.ViewData["message"] = "Successfully finished your order!";
             }
-
-            return new ViewResponse(HttpStatusCode.Ok, new SuccessView("You can not finish this order. Your cart is empty!"));
-        }
-
-        private int GetProductsCount(IHttpSession session)
-        {
-            int productsCount = 0;
-            
-            if (session.Contains("shoppingCart"))
+            else
             {
-                Cart cart = session.Get<Cart>("shoppingCart");
-                productsCount = cart.Cakes.Count;
-            }
-            return productsCount;
-        }
-
-        private Cart GetCartFromSession(IHttpSession session)
-        {
-            if (!session.Contains("shoppingCart"))
-            {
-                session.Add("shoppingCart", new Cart());
+                this.ViewData["message"] = "No cakes in the cart!";
             }
 
-            return session.Get<Cart>("shoppingCart");
+            return this.FileViewResponse(@"Cakes\success");
         }
     }
 }

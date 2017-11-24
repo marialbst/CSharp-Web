@@ -6,8 +6,8 @@
     using Routing.Contracts;
     using Enums;
     using HTTP.Response;
-    using Application.Views;
     using Server.HTTP;
+    using System.Linq;
 
     public class HttpHandler : IRequestHandler
     {
@@ -20,12 +20,12 @@
 
         public IHttpResponse Handle(IHttpContext httpContext)
         {
-            string loginPath = "/login";
+            var anonymousPaths = new[] { "/login", "/register" };
 
-            if (httpContext.Request.Session == null || (httpContext.Request.Path != loginPath &&
+            if (!anonymousPaths.Contains(httpContext.Request.Path) && (httpContext.Request.Session == null ||
                 !httpContext.Request.Session.IsAuthenticated()))
             {
-                return new RedirectResponse(loginPath);
+                return new RedirectResponse(anonymousPaths.First());
             }
 
             var routesContext = this.serverRouteConfig.Routes[httpContext.Request.Method];

@@ -1,23 +1,20 @@
 ﻿namespace WebServer.ByTheCake.Controllers
 {
-    using Views;
-    using Server.Enums;
     using Server.HTTP.Contracts;
     using Server.HTTP.Response;
-    using Server.HTTP;
 
-    public class HomeController
+    public class HomeController : Controller
     {
-        public IHttpResponse Index(IHttpSession session)
+        public IHttpResponse Index()
         {
-            return new ViewResponse(HttpStatusCode.Ok, new IndexView(session.Get(SessionStore.CurrentUserKey).ToString()));
+            return this.FileViewResponse(@"home\index");
         }
 
         public IHttpResponse About()
         {
-            return new ViewResponse(HttpStatusCode.Ok, new AboutView());
+            return this.FileViewResponse(@"home\about");
         }
-
+        
         public IHttpResponse Image(string imagePath)
         {
             return new ImageResponse(imagePath);
