@@ -1,7 +1,7 @@
 ﻿namespace WebServer.ByTheCake.Services
 {
     using System;
-    using Interfaces;
+    using Contracts;
     using Models;
     using Data;
     using System.Linq;
@@ -25,7 +25,7 @@
                     RegistrationDate = DateTime.UtcNow
                 };
 
-                db.Users.Add(user);
+                db.Add(user);
                 db.SaveChanges();
 
                 return true;
@@ -45,6 +45,7 @@
             using (var db = new ByTheCakeDbContext())
             {
                 var user = db.Users.FirstOrDefault(u => u.Username.ToLower() == username.ToLower());
+                var userOrdersCount = db.Orders.Where(o => o.UserId == user.Id).Count();
 
                 if (user == null)
                 {
@@ -55,8 +56,29 @@
                 {
                     Username = user.Username,
                     RegisteredOn = user.RegistrationDate,
-                    OrdersCount = user.Orders.Count()
+                    OrdersCount = userOrdersCount
                 };
+            }
+        }
+
+        public User FindUserByUsername(string username)
+        {
+            using (var db = new ByTheCakeDbContext())
+            {
+                return db.Users.FirstOrDefault(u => u.Username.ToLower() == username.ToLower());
+            }
+        }
+
+        public int? GetUserId(string username)
+        {
+            using (var db = new ByTheCakeDbContext())
+            {
+                 var id = db.Users
+                    .Where(u => u.Username.ToLower() == username.ToLower())
+                    .Select(u => u.Id)
+                    .FirstOrDefault();
+
+                return id != 0 ? (int?)id : null;
             }
         }
     }

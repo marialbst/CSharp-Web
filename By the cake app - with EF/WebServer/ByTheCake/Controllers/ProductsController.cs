@@ -6,20 +6,35 @@
     using Server.HTTP.Response;
     using System;
     using System.Linq;
+    using Services;
+    using Services.Contracts;
+    using Server.Enums;
+    using WebServer.ByTheCake.Views;
+    using WebServer.Server.HTTP;
 
     public class ProductsController : Controller
     {
-        private readonly CakeList cakeList;
+        private const string AddProductPath = @"Products\add";
+        private const string SearchProductPath = @"Products\search";
+        private const string CartPath = @"Products\cart";
+        private const string SuccessPath = @"Products\success";
+        private const string OrdersPath = @"Products\orders";
+
+        private readonly IProductService productService;
+        private readonly IOrderService orderService;
+        private readonly IUserService userService;
 
         public ProductsController()
         {
-            this.cakeList = new CakeList();
+            this.productService = new ProductService();
+            this.orderService = new OrderService();
+            this.userService = new UserService();
         }
 
         public IHttpResponse Add()
         {
             this.ViewData["showResult"] = "none";
-            return this.FileViewResponse(@"Products\add");
+            return this.FileViewResponse(AddProductPath);
         }
 
         public IHttpResponse Add(AddProductViewModel model)
@@ -29,18 +44,20 @@
                 || model.Name.Length > 30 
                 || model.ImageUrl.Length > 2000)
             {
-                this.ViewData["showError"] = "block red";
-                this.ViewData["error"] = "Invaid cake data";
+                this.AddError("Invalid cake data");
+                this.ViewData["showResult"] = "none";
 
-                return this.FileViewResponse(@"Products\add");
+                return this.FileViewResponse(AddProductPath);
             }
-            //this.cakeList.Add(name, price);
 
-            //this.ViewData["name"] = name;
-            //this.ViewData["price"] = price;
-            //this.ViewData["showResult"] = "block";
+            this.productService.Create(model.Name, model.Price, model.ImageUrl);
+            
+            this.ViewData["name"] = model.Name;
+            this.ViewData["price"] = $"{model.Price:f2}";
+            this.ViewData["url"] = model.ImageUrl;
+            this.ViewData["showResult"] = "block";
 
-            return this.FileViewResponse(@"Products\add");
+            return this.FileViewResponse(AddProductPath);
         }
 
         public IHttpResponse Search(IHttpRequest req)
@@ -51,56 +68,65 @@
             this.ViewData["result"] = string.Empty;
             this.ViewData["name"] = string.Empty;
 
-            if (queryParameters.ContainsKey(searchKey))
+            var searchTerm = queryParameters.ContainsKey(searchKey)
+                ? queryParameters[searchKey]
+                : null;
+
+            var products = this.productService.All(searchTerm);
+
+            if(!products.Any())
             {
-                string search = queryParameters[searchKey];
-                this.ViewData["name"] = search;
-
-                var foundCakes = this.cakeList
-                    .AllCakes()
-                    .Where(c => c.Name.ToLower().Contains(search.ToLower()))
-                    .Select(c => $"<div>{c.Name} ${c.Price:f2}<a href=\"/order?id={c.Id}&returnUrl={search}\"><button>Order</button></a></div>");
-
-                var result = string.Empty;
-
-                if (foundCakes.Any())
-                {
-                    result = string.Join(Environment.NewLine, foundCakes);
-                }
-                else
-                {
-                    result = "No cakes found";
-                }
-
-                this.ViewData["result"] = result;
+                this.ViewData["result"] = "No cakes found";
             }
             else
             {
-                this.ViewData["result"] = "Please, enter search term";
+                var foundProducts = products
+                    .Select(c => $"<div><a href=\"/products/{c.Id}\">{c.Name}</a> ${c.Price:f2}<a href=\"/order?id={c.Id}&returnUrl={searchTerm}\"><button>Order</button></a></div>");
+
+                this.ViewData["result"] = string.Join(Environment.NewLine, foundProducts);
             }
 
             var shoppingCart = req.Session.Get<Cart>(Cart.SessionKey);
 
-            var totalProducts = shoppingCart.Cakes.Count;
+            var totalProducts = shoppingCart.ProductIds.Count;
             var totalProductsText = totalProducts != 1 ? "products" : "product";
 
             this.ViewData["products"] = $"{totalProducts} {totalProductsText}";
 
-            return this.FileViewResponse(@"Products\search");
+            return this.FileViewResponse(SearchProductPath);
+        }
+
+        public IHttpResponse Details(int id)
+        {
+            var product = this.productService.Find(id);
+
+            if(product == null)
+            {
+                return new ViewResponse(HttpStatusCode.NotFound, new NotFoundView());
+            }
+
+            this.ViewData["name"] = product.Name;
+            this.ViewData["price"] = product.Price.ToString("f2");
+            this.ViewData["url"] = product.ImageUrl;
+
+            return this.FileViewResponse(@"Products\details");
         }
 
         public IHttpResponse Order(IHttpRequest request)
         {
             var id = int.Parse(request.QueryParameters["id"]);
 
-            var cake = this.cakeList.GetCakeById(id);
+            //get form db
+            var isExisting = this.productService.Exists(id);
 
             var cart = request.Session.Get<Cart>(Cart.SessionKey);
 
-            if (cake != null)
+            if (!isExisting)
             {
-                cart.Cakes.Add(cake);
+                return new ViewResponse(HttpStatusCode.NotFound, new NotFoundView());
             }
+
+            cart.ProductIds.Add(id);
 
             string returnPath = "/search";
 
@@ -118,21 +144,28 @@
         {
             var cart = req.Session.Get<Cart>(Cart.SessionKey);
 
-            if (!cart.Cakes.Any())
+            if (!cart.ProductIds.Any())
             {
                 this.ViewData["products"] = "No items in your cart";
                 this.ViewData["price"] = "$0.00";
             }
             else
             {
-                var products = cart.Cakes.Select(c => $"<div>{c.Name} - ${c.Price:f2}</div><br />");
-                var price = cart.TotalCost();
+                var products = this.productService
+                    .CartProducts(cart.ProductIds);
 
-                this.ViewData["products"] = string.Join(Environment.NewLine, products);
+                var productDivs = products
+                    .Select(c => $"<div>{c.Name} - ${c.Price:f2}</div><br />");
+
+                var price = products
+                    .Select(p => p.Price)
+                    .Sum();
+
+                this.ViewData["products"] = string.Join(Environment.NewLine, productDivs);
                 this.ViewData["price"] = $"${price:f2}";
             }
 
-            return this.FileViewResponse(@"Products\cart");
+            return this.FileViewResponse(CartPath);
         }
 
         public IHttpResponse Success(IHttpRequest req)
@@ -140,9 +173,13 @@
 
             var cart = req.Session.Get<Cart>(Cart.SessionKey);
 
-            if (cart.Cakes.Count > 0)
+            if (cart.ProductIds.Count > 0)
             {
-                cart.Cakes.Clear();
+                int userId = this.ValidateUser(req);
+                
+                this.orderService.CreateOrder(userId, cart.ProductIds);
+
+                cart.ProductIds.Clear();
                 this.ViewData["message"] = "Successfully finished your order!";
             }
             else
@@ -150,7 +187,55 @@
                 this.ViewData["message"] = "No cakes in the cart!";
             }
 
-            return this.FileViewResponse(@"Products\success");
+            return this.FileViewResponse(SuccessPath);
+        }
+
+        public IHttpResponse AllOrders(IHttpRequest req)
+        {
+            int userId = this.ValidateUser(req);
+
+            var ordersByUser = this.orderService.GetOrdersByUser(userId);
+
+            if (ordersByUser == null)
+            {
+                this.ViewData["showResult"] = "none";
+                this.ViewData["showMessage"] = "block";
+                this.ViewData["message"] = "You don't have any orders yet";
+                this.ViewData["result"] = string.Empty;
+                return this.FileViewResponse(OrdersPath);
+            }
+
+            var rows = ordersByUser
+                .Select(o => 
+                $"<tr>" +
+                $"  <td>" +
+                $"      <a href=\"/orders/{o.Id}\">{o.Id}</a>" +
+                $"  </td>"+
+                $"  <td>{o.CreationDate.ToShortDateString()}</td>"+
+                $"  <td>${o.Price:f2}</td>" +
+                $"</tr>"
+                );
+
+            string result = string.Join(Environment.NewLine, rows);
+
+            this.ViewData["result"] = result;
+            this.ViewData["showMessage"] = "none";
+            return this.FileViewResponse(OrdersPath);
+        }
+
+        private int ValidateUser(IHttpRequest req)
+        {
+            var currentUsername = req.Session.Get<string>(SessionStore.CurrentUserKey);
+
+            var id = this.userService.GetUserId(currentUsername);
+
+            if (id == null)
+            {
+                throw new InvalidOperationException($"User {currentUsername} does not exist");
+            }
+
+            int userId = id.Value;
+            return userId;
         }
     }
 }

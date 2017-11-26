@@ -6,11 +6,15 @@
     using ViewModels;
     using ViewModels.User;
     using Services;
-    using Services.Interfaces;
+    using Services.Contracts;
     using System;
 
     public class UserController : Controller
     {
+        private const string RegisterViewPath = @"User\register";
+        private const string LoginViewPath = @"User\login";
+        private const string ProfileViewPath = @"User\profile";
+
         private readonly IUserService userService;
 
         public UserController()
@@ -22,38 +26,23 @@
         {
             this.SetDefaultViewData();
 
-            return this.FileViewResponse(@"User\register");
+            return this.FileViewResponse(RegisterViewPath);
         }
 
         public IHttpResponse Register(IHttpRequest req, RegisterUserViewModel model)
         {
             if(model.Username.Length < 3 || model.Password.Length < 3 || model.Password != model.ConfirmPassword)
             {
-                this.ViewData["showError"] = "block red";
+                this.AddError("Invalid user details");
 
-                if (model.Username.Length < 3)
-                {
-                    this.ViewData["error"] += "Username have to be atleast 3 symbols<br />";
-                }
-
-                if (model.Password.Length < 3)
-                {
-                    this.ViewData["error"] += "Password have to be atleast 3 symbols<br />";
-                }
-
-                if (model.Password != model.ConfirmPassword)
-                {
-                    this.ViewData["error"] += "Passwords doesn't match<br />";
-                }
-                return this.FileViewResponse(@"User\register");
+                return this.FileViewResponse(RegisterViewPath);
             }
             
             if(!this.userService.Create(model.Username, model.Password))
             {
-                this.ViewData["showError"] = "block red";
-                this.ViewData["error"] = "This username is already taken<br />";
+               this.AddError("This username is already taken");
 
-                return this.FileViewResponse(@"User\register");
+                return this.FileViewResponse(RegisterViewPath);
             }
 
             this.LoginUser(req, model.Username);
@@ -80,14 +69,14 @@
             this.ViewData["date"] = model.RegisteredOn.ToShortDateString();
             this.ViewData["count"] = model.OrdersCount.ToString();
 
-            return this.FileViewResponse(@"User\profile");
+            return this.FileViewResponse(ProfileViewPath);
         }
 
         public IHttpResponse Login()
         {
             this.SetDefaultViewData();
 
-            return this.FileViewResponse(@"User\login");
+            return this.FileViewResponse(LoginViewPath);
         }
 
         public IHttpResponse Login(IHttpRequest req, LoginUserViewModel model)
@@ -95,20 +84,18 @@
             if (string.IsNullOrEmpty(model.Username.Trim())
                 || string.IsNullOrEmpty(model.Password.Trim()))
             {
-                this.ViewData["error"] = "You have empty fields";
-                this.ViewData["showError"] = "block red";
+                this.AddError("You have empty fields");
 
-                return this.FileViewResponse(@"User\login");
+                return this.FileViewResponse(LoginViewPath);
             }
 
             bool isSuccess=this.userService.Find(model.Username, model.Password);
 
             if (!isSuccess)
             {
-                this.ViewData["error"] = "Wrong password and/or username";
-                this.ViewData["showError"] = "block red";
+                this.AddError("Wrong password and/or username");
 
-                return this.FileViewResponse(@"User\login");
+                return this.FileViewResponse(LoginViewPath);
             }
 
             this.LoginUser(req, model.Username);

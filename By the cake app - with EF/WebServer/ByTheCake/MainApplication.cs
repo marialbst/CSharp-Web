@@ -7,6 +7,7 @@
     using ViewModels.User;
     using Data;
     using Microsoft.EntityFrameworkCore;
+    using WebServer.ByTheCake.ViewModels.Products;
 
     public class MainApplication : IApplication
     {
@@ -57,9 +58,20 @@
                 .AddRoute("/add", new GetHandler(ctx => new ProductsController().Add()));
 
             appRouteConfig
-                .AddRoute("/add", new PostHandler(ctx => new ProductsController().Add(ctx.Request.FormData["name"], ctx.Request.FormData["price"])));
+                .AddRoute("/add", new PostHandler(ctx => new ProductsController().Add(new AddProductViewModel()
+                {
+                    Name = ctx.Request.FormData["name"],
+                    Price = decimal.Parse(ctx.Request.FormData["price"]),
+                    ImageUrl = ctx.Request.FormData["url"]
+                })));
 
-           appRouteConfig
+            appRouteConfig
+                .AddRoute("/products/{(?<id>[0-9]+)}", new GetHandler(ctx => new ProductsController().Details(int.Parse(ctx.Request.UrlParameters["id"]))));
+
+            appRouteConfig
+                .AddRoute("/orders", new GetHandler(ctx => new ProductsController().AllOrders(ctx.Request)));
+
+            appRouteConfig
                 .AddRoute("/order", new GetHandler(ctx => new ProductsController().Order(ctx.Request)));           
 
             appRouteConfig
@@ -71,7 +83,7 @@
             appRouteConfig
                 .AddRoute("/success", new PostHandler(ctx => new ProductsController().Success(ctx.Request)));
 
-           appRouteConfig
+            appRouteConfig
                .AddRoute(@"/Images/{(?<imagePath>[a-zA-Z0-9_]+\.(jpg|png))}",
                     new GetHandler(ctx => new HomeController().Image(ctx.Request.UrlParameters["imagePath"])));
         }

@@ -5,14 +5,17 @@
 
     public class HomeController : Controller
     {
+        private const string IndexPath = @"Home\index";
+        private const string AboutPath = @"Home\about";
+
         public IHttpResponse Index()
         {
-            return this.FileViewResponse(@"home\index");
+            return this.FileViewResponse(IndexPath);
         }
 
         public IHttpResponse About()
         {
-            return this.FileViewResponse(@"home\about");
+            return this.FileViewResponse(AboutPath);
         }
         
         public IHttpResponse Image(string imagePath)

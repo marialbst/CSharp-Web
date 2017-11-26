@@ -50,5 +50,11 @@
 
             return result;
         }
+
+        protected void AddError(string errorMsg)
+        {
+            this.ViewData["showError"] = "block red";
+            this.ViewData["error"] = errorMsg;
+        }
     }
 }

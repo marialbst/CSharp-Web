@@ -1,6 +1,6 @@
 ﻿namespace WebServer
 {
-    using ByTheCake;
+    using GameStore;
     using Server;
     using Server.Contracts;
     using Server.Routing;
@@ -17,7 +17,7 @@
 
         public void Run()
         {
-            IApplication app = new MainApplication();
+            IApplication app = new GameStoreApplication();
             app.InitializeDb();
 
             IAppRouteConfig appRouteConfig = new AppRouteConfig();
