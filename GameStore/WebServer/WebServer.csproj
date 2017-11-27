@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="GameStore\Controllers\" />
     <Folder Include="GameStore\Resourses\" />
     <Folder Include="GameStore\Views\" />
   </ItemGroup>
