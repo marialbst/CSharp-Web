@@ -6,5 +6,7 @@
     public interface IServerRouteConfig
     {
         Dictionary<HttpRequestMethod, Dictionary<string, IRoutingContext>> Routes { get; }
+
+        ICollection<string> AnonymousPaths { get; }
     }
 }

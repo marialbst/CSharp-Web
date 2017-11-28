@@ -20,12 +20,13 @@
 
         public IHttpResponse Handle(IHttpContext httpContext)
         {
-            var anonymousPaths = new[] { "/login", "/register" };
+            
+            var anonymousPaths = this.serverRouteConfig.AnonymousPaths;
 
             if (!anonymousPaths.Contains(httpContext.Request.Path) && (httpContext.Request.Session == null ||
                 !httpContext.Request.Session.IsAuthenticated()))
             {
-                return new RedirectResponse(anonymousPaths.First());
+                return new RedirectResponse(anonymousPaths.First(p => p == "/login"));
             }
 
             var routesContext = this.serverRouteConfig.Routes[httpContext.Request.Method];

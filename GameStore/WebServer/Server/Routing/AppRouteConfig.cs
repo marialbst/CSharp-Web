@@ -15,6 +15,7 @@
         public AppRouteConfig()
         {
             this.routes = new Dictionary<HttpRequestMethod, Dictionary<string, RequestHandler>>();
+            this.AnonymousPaths = new List<string>();
 
             var methods = Enum.GetValues(typeof(HttpRequestMethod)).Cast<HttpRequestMethod>();
 
@@ -25,6 +26,8 @@
         }
 
         public IReadOnlyDictionary<HttpRequestMethod, Dictionary<string, RequestHandler>> Routes { get { return this.routes; } }
+
+        public ICollection<string> AnonymousPaths { get; private set; }
 
         public void Get(string route, Func<IHttpContext, IHttpResponse> handler)
         {

@@ -9,5 +9,7 @@
         IReadOnlyDictionary<HttpRequestMethod, Dictionary<string, RequestHandler>> Routes { get; }
 
         void AddRoute(string route, RequestHandler handler);
+
+        ICollection<string> AnonymousPaths { get; }
     }
 }
