@@ -19,22 +19,22 @@
             
         }
 
-        public bool Save(RegisterViewModel model)
+        public bool Save(string email, string password, string fullName)
         {
             using (var db = new GameStoreDbContext())
             {
                 var users = db.Users;
 
-                if(users.Any(u => u.Email.ToLower() == model.Email.ToLower()))
+                if(users.Any(u => u.Email.ToLower() == email.ToLower()))
                 {
                     return false;
                 }
 
                 User user = new User()
                 {
-                    Email = model.Email,
-                    FullName = model.FullName,
-                    Password = model.Password,
+                    Email = email,
+                    FullName = fullName,
+                    Password = password,
                     IsAdmin = !users.Any()
                 };
 
@@ -45,11 +45,11 @@
             }
         }
 
-        public bool Find(LoginViewModel model)
+        public bool Find(string email, string password)
         {
             using (var db = new GameStoreDbContext())
             {
-                return db.Users.Any(u => u.Email.ToLower() == model.Email.ToLower() && model.Password == u.Password);
+                return db.Users.Any(u => u.Email.ToLower() == email.ToLower() && u.Password == password);
             }
         }
     }

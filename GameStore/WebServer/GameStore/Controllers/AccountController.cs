@@ -4,9 +4,9 @@
     using ViewModels.Account;
     using Service;
     using Service.Contracts;
-    using Validation;
-    using WebServer.Server.HTTP.Response;
-    using WebServer.Server.HTTP;
+    using Utilities;
+    using Server.HTTP.Response;
+    using Server.HTTP;
 
     public class AccountController : Controller
     {
@@ -15,17 +15,15 @@
 
         private IUserService userService;
 
-        public AccountController()
+        public AccountController(IHttpRequest request)
+            :base(request)
         {
             this.userService = new UserService();
         }
 
-        public IHttpResponse Register(IHttpSession session)
+        public IHttpResponse Register()
         {
-            this.GetUserType(session);
-            this.ViewData["showError"] = Controller.HideElementClass;
-
-            if (session.Contains(SessionStore.CurrentUserKey))
+            if (this.IsAuthenticated)
             {
                 return new RedirectResponse("/");
             }
@@ -33,65 +31,64 @@
             return this.FileViewResponse(RegisterPath);
         }
 
-        public IHttpResponse Register(IHttpRequest req, RegisterViewModel model)
+        public IHttpResponse Register(RegisterViewModel model)
         {
-            string error = ValidateInput.Validate(model);
-            this.GetUserType(req.Session);
-
-            if (error != string.Empty)
+            if (!this.ValidateModel(model))
             {
-                this.AddError(error);
+                return this.FileViewResponse(RegisterPath);
+            }
+
+            if (!this.userService.Save(model.Email, model.Password, model.FullName))
+            {
+                this.AddError(ValidationConstants.UsernameTakenError);
 
                 return this.FileViewResponse(RegisterPath);
             }
 
-            bool result = this.userService.Save(model);
-
-            if (!result)
-            {
-                this.AddError(ValidationErrors.UsernameTakenError);
-                return this.FileViewResponse(RegisterPath);
-            }
-
-            //req.Session.Add(SessionStore.CurrentUserKey, model.Email);
-            return new RedirectResponse("/login");
+            this.Request.Session.Add(SessionStore.CurrentUserKey, model.Email);
+            return new RedirectResponse("/");
         }
 
-        public IHttpResponse Login(IHttpSession session)
+        public IHttpResponse Login()
         {
-            this.GetUserType(session);
-
-            if (session.Contains(SessionStore.CurrentUserKey))
+            if (this.IsAuthenticated)
             {
                 return new RedirectResponse("/");
             }
 
-            this.ViewData["showError"] = Controller.HideElementClass;
-
             return this.FileViewResponse(LoginPath);
         }
 
-        public IHttpResponse Login(IHttpRequest req, LoginViewModel model)
+        public IHttpResponse Login(LoginViewModel model)
         {
-            this.GetUserType(req.Session);
-
-            bool result = this.userService.Find(model);
-
-            if (!result)
+            if (!this.ValidateModel(model))
             {
-                this.AddError(ValidationErrors.EmailOrPasswordError);
                 return this.FileViewResponse(LoginPath);
             }
 
-            req.Session.Add(SessionStore.CurrentUserKey, model.Email);
+            bool result = this.userService.Find(model.Email, model.Password);
+
+            if (!result)
+            {
+                this.AddError(ValidationConstants.EmailOrPasswordError);
+
+                return this.FileViewResponse(LoginPath);
+            }
+
+            this.Request.Session.Add(SessionStore.CurrentUserKey, model.Email);
             return new RedirectResponse("/");
         }
 
-        public IHttpResponse Logout(IHttpRequest request)
+        public IHttpResponse Logout()
         {
-            request.Session.Clear();
+            if (!this.IsAuthenticated)
+            {
+                return new RedirectResponse("/login");
+            }
 
-            return new RedirectResponse("/login");
+            this.Request.Session.Clear();
+
+            return new RedirectResponse("/");
         }
     }
 }

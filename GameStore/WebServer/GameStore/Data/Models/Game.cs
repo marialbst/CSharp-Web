@@ -3,19 +3,20 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using WebServer.GameStore.Utilities;
 
     public class Game
     {
         public int Id { get; set; }
 
         [Required]
-        [MinLength(3)]
-        [MaxLength(100)]
+        [MinLength(ValidationConstants.Game.TitleMinLength)]
+        [MaxLength(ValidationConstants.Game.TitleMaxLength)]
         public string Title { get; set; }
 
         [Required]
-        [MinLength(11)]
-        [MaxLength(11)]
+        [MinLength(ValidationConstants.Game.TrailerIdLength)]
+        [MaxLength(ValidationConstants.Game.TrailerIdLength)]
         public string TrailerId { get; set; }
 
         [Required]
@@ -26,7 +27,7 @@
         public decimal Price { get; set; }
 
         [Required]
-        [MinLength(20)]
+        [MinLength(ValidationConstants.Game.DescriptionMinLength)]
         public string Description { get; set; }
 
         public DateTime ReleaseDate { get; set; }

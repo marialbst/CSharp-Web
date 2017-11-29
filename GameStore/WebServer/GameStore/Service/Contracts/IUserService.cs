@@ -6,8 +6,8 @@
     {
         bool IsAdmin(string userName);
 
-        bool Save(RegisterViewModel model);
+        bool Save(string email, string password, string fullName);
 
-        bool Find(LoginViewModel model);
+        bool Find(string email, string password);
     }
 }

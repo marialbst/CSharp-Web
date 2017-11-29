@@ -1,41 +1,67 @@
 ﻿namespace WebServer.GameStore.Controllers
 {
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using Server.Enums;
-    using Server.HTTP.Contracts;
-    using Server.HTTP.Response;
-    using Server;
     using Enums;
     using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.IO;
+    using System.Linq;
+    using Server;
+    using Server.Enums;
     using Server.HTTP;
-    using Service.Contracts;
+    using Server.HTTP.Contracts;
+    using Server.HTTP.Response;
     using Service;
+    using Service.Contracts;
 
     public abstract class Controller
     {
         public const string DefaultPath = @"GameStore\Resourses\{0}.html";
         public const string ContentPlaceholder = "{{{content}}}";
-        public const string HideElementClass = "hideElement";
+        public const string AddHideElementClass = "hideElement";
+        public const string RemoveHideElementClass = "";
 
-        private IUserService userService;
-
-        public Controller()
+        private readonly IUserService userService;
+        
+        public Controller(IHttpRequest request)
         {
             this.userService = new UserService();
+            this.Request = request;
 
             this.ViewData = new Dictionary<string, string>
             {
-                ["user"] = HideElementClass,
-                ["guest"] = HideElementClass,
-                ["admin"] = HideElementClass
+                ["showError"] = AddHideElementClass,
+                ["user"] = AddHideElementClass,
+                ["guest"] = AddHideElementClass,
+                ["admin"] = AddHideElementClass
             };
+
+            this.GetUserType();
+        }
+
+        protected IHttpRequest Request { get; private set; }
+
+        protected bool IsAuthenticated
+        {
+            get
+            {
+                return this.Request.Session.Contains(SessionStore.CurrentUserKey);
+            }
+        }
+
+        protected bool IsAdmin
+        {
+            get
+            {
+                string currentUser = this.Request.Session.Get<string>(SessionStore.CurrentUserKey);
+
+                return this.userService.IsAdmin(currentUser);
+            }
         }
 
         protected IDictionary<string, string> ViewData { get; private set; }
 
-        public IHttpResponse FileViewResponse(string fileName)
+        protected IHttpResponse FileViewResponse(string fileName)
         {
             var result = this.ProcessFileHtml(fileName);
 
@@ -50,21 +76,43 @@
             return new ViewResponse(HttpStatusCode.Ok, new FileView(result));
         }
 
+        protected bool ValidateModel(object model)
+        {
+            var context = new ValidationContext(model);
+            var results = new List<ValidationResult>();
+
+            if (!Validator.TryValidateObject(model, context, results, true))
+            {
+                foreach (var result in results)
+                {
+                    if(result != ValidationResult.Success)
+                    {
+                        this.AddError(result.ErrorMessage);
+
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
         private string ProcessFileHtml(string fileName)
         {
-            var layoutHtml = File.ReadAllText(string.Format(DefaultPath, "layout"));
+            string layoutHtml = File.ReadAllText(string.Format(DefaultPath, "layout"));
 
-            var fileHtml = File
+            string fileHtml = File
                 .ReadAllText(string.Format(DefaultPath, fileName));
 
-            var result = layoutHtml.Replace(ContentPlaceholder, fileHtml);
+            string result = layoutHtml.Replace(ContentPlaceholder, fileHtml);
 
             return result;
         }
 
-        protected void GetUserType(IHttpSession session)
+        private void GetUserType()
         {
             string userKey = SessionStore.CurrentUserKey;
+            var session = this.Request.Session;
 
             if (!session.Contains(userKey))
             {
@@ -87,12 +135,12 @@
         {
             string parsedName = Enum.GetName(typeof(UserType), visitorType).ToLower();
 
-            this.ViewData[parsedName] = string.Empty;
+            this.ViewData.Remove(parsedName);
         }
 
         protected void AddError(string errorMsg)
         {
-            this.ViewData["showError"] = string.Empty;
+            this.ViewData["showError"] = RemoveHideElementClass;
             this.ViewData["error"] = errorMsg;
         }
     }

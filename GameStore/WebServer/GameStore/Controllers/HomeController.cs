@@ -7,10 +7,14 @@
     {
         private const string IndexPath = @"Home\index";
 
-        public IHttpResponse Index(IHttpSession session)
+        public HomeController(IHttpRequest request)
+            :base(request)
         {
-            this.GetUserType(session);
 
+        }
+
+        public IHttpResponse Index()
+        {
             return this.FileViewResponse(IndexPath);
         }
 

@@ -25,14 +25,14 @@
             appRouteConfig.AnonymousPaths.Add("/login");
 
             appRouteConfig
-                .AddRoute("/", new GetHandler(ctx => new HomeController().Index(ctx.Request.Session)));
+                .AddRoute("/", new GetHandler(ctx => new HomeController(ctx.Request).Index()));
 
             appRouteConfig
-                .AddRoute("/register", new GetHandler( ctx => new AccountController().Register(ctx.Request.Session)));
+                .AddRoute("/register", new GetHandler( ctx => new AccountController(ctx.Request).Register()));
 
             appRouteConfig
-               .AddRoute("/register", new PostHandler(ctx => new AccountController()
-                    .Register(ctx.Request, new RegisterViewModel()
+               .AddRoute("/register", new PostHandler(ctx => new AccountController(ctx.Request)
+                    .Register(new RegisterViewModel()
                     {
                         Email = ctx.Request.FormData["email"].Trim(),
                         FullName = ctx.Request.FormData["fullName"].Trim(),
@@ -41,21 +41,37 @@
                     })));
 
             appRouteConfig
-                .AddRoute("/login", new GetHandler(ctx => new AccountController().Login(ctx.Request.Session)));
+                .AddRoute("/login", new GetHandler(ctx => new AccountController(ctx.Request).Login()));
 
             appRouteConfig
-               .AddRoute("/login", new PostHandler(ctx => new AccountController().Login(ctx.Request, new LoginViewModel()
+               .AddRoute("/login", new PostHandler(ctx => new AccountController(ctx.Request)
+               .Login(new LoginViewModel()
                {
                    Email = ctx.Request.FormData["email"].Trim(),
                    Password = ctx.Request.FormData["password"].Trim()
                })));
 
             appRouteConfig
-                 .AddRoute("/logout", new GetHandler(ctx => new AccountController().Logout(ctx.Request)));
+                 .AddRoute("/logout", new GetHandler(ctx => new AccountController(ctx.Request).Logout()));
+
+            appRouteConfig
+               .AddRoute("/admin/games", new GetHandler(ctx => new AdminController(ctx.Request).List()));
+
+            appRouteConfig
+                .AddRoute("/admin/games/add", new GetHandler(ctx => new AdminController(ctx.Request).Add()));
+
+            appRouteConfig
+                .AddRoute("/admin/games/add", new PostHandler(ctx => new AdminController(ctx.Request).Add()));
+
+            appRouteConfig
+                .AddRoute("/admin/games/edit?{(?<id>[0-9]+)}", new GetHandler(ctx => new AdminController(ctx.Request).Edit(int.Parse(ctx.Request.UrlParameters["id"]))));
+
+            appRouteConfig
+                .AddRoute("/admin/games/delete?{(?<id>[0-9]+)}", new GetHandler(ctx => new AdminController(ctx.Request).Delete(int.Parse(ctx.Request.UrlParameters["id"]))));
 
             appRouteConfig
                .AddRoute(@"/Images/{(?<imagePath>[a-zA-Z0-9_]+\.(jpg|png))}",
-                    new GetHandler(ctx => new HomeController().Image(ctx.Request.UrlParameters["imagePath"])));
+                    new GetHandler(ctx => new HomeController(ctx.Request).Image(ctx.Request.UrlParameters["imagePath"])));
         }
     }
 }
