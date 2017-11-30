@@ -30,7 +30,7 @@
         [MinLength(ValidationConstants.Game.DescriptionMinLength)]
         public string Description { get; set; }
 
-        public DateTime ReleaseDate { get; set; }
+        public DateTime? ReleaseDate { get; set; }
 
         public ICollection<UserGame> Users { get; set; } = new List<UserGame>();
     }

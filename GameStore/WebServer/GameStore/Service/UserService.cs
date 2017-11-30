@@ -52,5 +52,13 @@
                 return db.Users.Any(u => u.Email.ToLower() == email.ToLower() && u.Password == password);
             }
         }
+
+        public User Find(string email)
+        {
+            using (var db = new GameStoreDbContext())
+            {
+                return db.Users.Where(u => u.Email.ToLower() == email.ToLower()).FirstOrDefault();
+            }
+        }
     }
 }

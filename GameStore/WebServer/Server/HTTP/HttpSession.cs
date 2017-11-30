@@ -44,6 +44,11 @@
             this.values.Clear();
         }
 
+        public void Clear(string key)
+        {
+            this.values.Remove(key);
+        }
+
         public bool IsAuthenticated()
         {
             return this.values.ContainsKey(SessionStore.CurrentUserKey);

@@ -7,17 +7,16 @@
 
   <ItemGroup>
     <Compile Remove="ByTheCake\**" />
+    <Compile Remove="GameStore\Views\**" />
     <EmbeddedResource Remove="ByTheCake\**" />
+    <EmbeddedResource Remove="GameStore\Views\**" />
     <None Remove="ByTheCake\**" />
+    <None Remove="GameStore\Views\**" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="GameStore\Views\" />
   </ItemGroup>
 
 </Project>

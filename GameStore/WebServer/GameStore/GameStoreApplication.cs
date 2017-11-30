@@ -1,5 +1,7 @@
 ﻿namespace WebServer.GameStore
 {
+    using System;
+    using System.Globalization;
     using Controllers;
     using Data;
     using Microsoft.EntityFrameworkCore;
@@ -7,6 +9,7 @@
     using Server.Handlers;
     using Server.Routing.Contracts;
     using ViewModels.Account;
+    using WebServer.GameStore.ViewModels.Game;
 
     public class GameStoreApplication : IApplication
     {
@@ -20,12 +23,16 @@
 
         public void Start(IAppRouteConfig appRouteConfig)
         {
-            appRouteConfig.AnonymousPaths.Add("/");
-            appRouteConfig.AnonymousPaths.Add("/register");
-            appRouteConfig.AnonymousPaths.Add("/login");
+            //appRouteConfig.AnonymousPaths.Add("/");
+            //appRouteConfig.AnonymousPaths.Add("/register");
+            //appRouteConfig.AnonymousPaths.Add("/login");
+            //appRouteConfig.AnonymousPaths.Add("/games/details/{(?<id>[0-9]+)}");
 
             appRouteConfig
                 .AddRoute("/", new GetHandler(ctx => new HomeController(ctx.Request).Index()));
+
+            appRouteConfig
+               .AddRoute("/", new PostHandler(ctx => new HomeController(ctx.Request).Index(ctx.Request.FormData["filter"])));
 
             appRouteConfig
                 .AddRoute("/register", new GetHandler( ctx => new AccountController(ctx.Request).Register()));
@@ -61,13 +68,41 @@
                 .AddRoute("/admin/games/add", new GetHandler(ctx => new AdminController(ctx.Request).Add()));
 
             appRouteConfig
-                .AddRoute("/admin/games/add", new PostHandler(ctx => new AdminController(ctx.Request).Add()));
+                .AddRoute("/admin/games/add", new PostHandler(ctx => new AdminController(ctx.Request).Add(new AddGameViewModel()
+                {
+                    Title = ctx.Request.FormData["name"],
+                    Description = ctx.Request.FormData["description"],
+                    ImageThumbnail = ctx.Request.FormData["url"],
+                    Price = Math.Round(decimal.Parse(ctx.Request.FormData["price"]), 2),
+                    Size = Math.Round(double.Parse(ctx.Request.FormData["size"]), 1),
+                    TrailerId = ctx.Request.FormData["youtube-id"],
+                    ReleaseDate = DateTime.ParseExact(ctx.Request.FormData["release-date"], "yyyy-MM-dd", CultureInfo.InvariantCulture)
+                })));
 
             appRouteConfig
-                .AddRoute("/admin/games/edit?{(?<id>[0-9]+)}", new GetHandler(ctx => new AdminController(ctx.Request).Edit(int.Parse(ctx.Request.UrlParameters["id"]))));
+                .AddRoute("/admin/games/edit/{(?<id>[0-9]+)}", new GetHandler(ctx => new AdminController(ctx.Request).Edit(int.Parse(ctx.Request.UrlParameters["id"]))));
 
             appRouteConfig
-                .AddRoute("/admin/games/delete?{(?<id>[0-9]+)}", new GetHandler(ctx => new AdminController(ctx.Request).Delete(int.Parse(ctx.Request.UrlParameters["id"]))));
+                .AddRoute("/admin/games/edit/{(?<id>[0-9]+)}", new PostHandler(ctx => new AdminController(ctx.Request).Edit(new ManageGameViewModel()
+                {
+                    Id = int.Parse(ctx.Request.UrlParameters["id"]),
+                    Title = ctx.Request.FormData["name"],
+                    Description = ctx.Request.FormData["description"],
+                    ImageThumbnail = ctx.Request.FormData["url"],
+                    Price = Math.Round(decimal.Parse(ctx.Request.FormData["price"]), 2),
+                    Size = Math.Round(double.Parse(ctx.Request.FormData["size"]), 1),
+                    TrailerId = ctx.Request.FormData["youtube-id"],
+                    ReleaseDate = DateTime.ParseExact(ctx.Request.FormData["release-date"], "yyyy-MM-dd", CultureInfo.InvariantCulture)
+                })));
+
+            appRouteConfig
+                .AddRoute("/admin/games/delete/{(?<id>[0-9]+)}", new GetHandler(ctx => new AdminController(ctx.Request).Delete(int.Parse(ctx.Request.UrlParameters["id"]))));
+
+            appRouteConfig
+                .AddRoute("/admin/games/delete/{(?<id>[0-9]+)}", new PostHandler(ctx => new AdminController(ctx.Request).DeleteConfirmed(int.Parse(ctx.Request.UrlParameters["id"]))));
+
+            appRouteConfig
+                .AddRoute("/games/details/{(?<id>[0-9]+)}", new GetHandler(ctx => new GameController(ctx.Request).Details(int.Parse(ctx.Request.UrlParameters["id"]))));
 
             appRouteConfig
                .AddRoute(@"/Images/{(?<imagePath>[a-zA-Z0-9_]+\.(jpg|png))}",

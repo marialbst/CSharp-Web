@@ -21,13 +21,13 @@
         public IHttpResponse Handle(IHttpContext httpContext)
         {
             
-            var anonymousPaths = this.serverRouteConfig.AnonymousPaths;
+            //var anonymousPaths = this.serverRouteConfig.AnonymousPaths;
 
-            if (!anonymousPaths.Contains(httpContext.Request.Path) && (httpContext.Request.Session == null ||
-                !httpContext.Request.Session.IsAuthenticated()))
-            {
-                return new RedirectResponse(anonymousPaths.First(p => p == "/login"));
-            }
+            //if (!anonymousPaths.Contains(httpContext.Request.Path) && (httpContext.Request.Session == null ||
+            //    !httpContext.Request.Session.IsAuthenticated()))
+            //{
+            //    return new RedirectResponse(anonymousPaths.First(p => p == "/login"));
+            //}
 
             var routesContext = this.serverRouteConfig.Routes[httpContext.Request.Method];
             string path = httpContext.Request.Path;

@@ -5,14 +5,17 @@
     using Utilities;
     using Utilities.ValidationAttributes;
 
-    public class AddGameViewModel
+    public class ManageGameViewModel
     {
+        [Required]
+        public int Id { get; set; }
+
         [Required]
         [Title]
         [MinLength(ValidationConstants.Game.TitleMinLength,
-            ErrorMessage = ValidationConstants.InvalidMinLengthError)]
+           ErrorMessage = ValidationConstants.InvalidMinLengthError)]
         [MaxLength(ValidationConstants.Game.TitleMaxLength,
-            ErrorMessage = ValidationConstants.InvalidMaxLengthError)]
+           ErrorMessage = ValidationConstants.InvalidMaxLengthError)]
         public string Title { get; set; }
 
         [Display(Name = "Youtube video Id")]
@@ -26,9 +29,9 @@
         [Required]
         [ImageUrl]
         public string ImageThumbnail { get; set; }
-        
+
         [Required]
-        [Range(0,double.MaxValue,
+        [Range(0, double.MaxValue,
             ErrorMessage = ValidationConstants.InvalidNumberError)]
         public double Size { get; set; }
 

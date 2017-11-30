@@ -15,10 +15,11 @@
     {
         private const string ListPath = @"Admin\list";
         private const string AddGamePath = @"Admin\add-game";
+        private const string EditGamePath = @"Admin\edit-game";
+        private const string DeleteGamePath = @"Admin\delete-game";
 
         private readonly IUserService userService;
         private readonly IGameService gameService;
-        private string returnPath = string.Empty;
 
         public AdminController(IHttpRequest request) 
             : base(request)
@@ -84,22 +85,115 @@
                 return this.FileViewResponse(AddGamePath);
             }
 
-            //validation of title, price and size
-            //todo add to db
+            this.gameService.Create(
+                model.Title, 
+                model.TrailerId, 
+                model.ImageThumbnail, 
+                model.Size,
+                model.Price, 
+                model.Description, 
+                model.ReleaseDate.Value);
+
+            return new RedirectResponse("/admin/games");
+        }
+
+        //get
+        public IHttpResponse Edit(int id)
+        {
+            if (!this.IsAdmin)
+            {
+                return new RedirectResponse("/");
+            }
+
+            var model = this.gameService.Find(id);
+
+            if (model == null)
+            {
+                this.ViewData["showMessage"] = Controller.RemoveHideElementClass;
+                this.ViewData["message"] = "Game not found";
+
+                return new RedirectResponse("/admin/games");
+            }
+
+            this.PopulateFormWithDbData(model);
+
+            return this.FileViewResponse(EditGamePath);
+        }
+
+        public IHttpResponse Edit(ManageGameViewModel model)
+        {
+            if (!this.ValidateModel(model))
+            {
+                return this.Edit(model.Id);
+            }
+
+            bool result = this.gameService.Edit(
+                model.Id,
+                model.Title,
+                model.TrailerId,
+                model.ImageThumbnail,
+                model.Size,
+                model.Price,
+                model.Description,
+                model.ReleaseDate.Value);            
+
+            if (!result)
+            {
+                this.ViewData["showError"] = Controller.RemoveHideElementClass;
+                this.ViewData["error"] = "No changes has been made";
+                return this.Edit(model.Id);
+            }
+
             return new RedirectResponse("/admin/games");
         }
 
         //get
         public IHttpResponse Delete(int id)
         {
-            
-            throw new NotImplementedException();
+            if (!this.IsAdmin)
+            {
+                return new RedirectResponse("/");
+            }
+
+            var model = this.gameService.Find(id);
+
+            if (model == null)
+            {
+                this.AddError("Game not found");
+
+                return new RedirectResponse("/admin/games");
+            }
+
+            this.PopulateFormWithDbData(model);
+
+            return this.FileViewResponse(DeleteGamePath);
         }
 
-        //get
-        public IHttpResponse Edit(int id)
+        public IHttpResponse DeleteConfirmed(int id)
         {
-            throw new NotImplementedException();
+            bool isExisting = this.gameService.Exists(id);
+
+            if (!isExisting)
+            {
+                this.AddError("Game not found");
+
+                return new RedirectResponse("/admin/games");
+            }
+
+            this.gameService.Delete(id);
+
+            return new RedirectResponse("/admin/games");
+        }
+
+        private void PopulateFormWithDbData(AddGameViewModel model)
+        {
+            this.ViewData["nameValue"] = model.Title;
+            this.ViewData["descriptionValue"] = model.Description;
+            this.ViewData["urlValue"] = model.ImageThumbnail;
+            this.ViewData["priceValue"] = model.Price.ToString();
+            this.ViewData["sizeValue"] = model.Size.ToString();
+            this.ViewData["youtubeValue"] = model.TrailerId;
+            this.ViewData["dateValue"] = String.Format("{0:yyyy-MM-dd}", model.ReleaseDate);
         }
 
         private string RenderTable(IList<ListGamesViewModel> allGames)
@@ -129,10 +223,10 @@
                 gameString.AppendLine($"    <td>{size}</td>");
                 gameString.AppendLine($"    <td>{price}</td>");
                 gameString.AppendLine($"    <td>");
-                gameString.AppendLine($"        <a href=\"/admin/games/edit?id={id}\" class=\"btn btn-warning btn-sm\">Edit</a>");
-                gameString.AppendLine($"        <a href=\"/admin/games/delete?id={id}\" class=\"btn btn-danger btn-sm\">Delete</a>");
+                gameString.AppendLine($"        <a href=\"/admin/games/edit/{id}\" class=\"btn btn-warning btn-sm\">Edit</a>");
+                gameString.AppendLine($"        <a href=\"/admin/games/delete/{id}\" class=\"btn btn-danger btn-sm\">Delete</a>");
                 gameString.AppendLine($"    </td>");
-                gameString.AppendLine("/<tr>");
+                gameString.AppendLine("</tr>");
 
                 resultString.AppendLine(gameString.ToString());
             }

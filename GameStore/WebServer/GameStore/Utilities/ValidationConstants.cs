@@ -8,13 +8,19 @@
 
         public const string UsernameTakenError = "Username already taken";
 
+        public const string InvalidImageUrl = "Url must start with http://, https:// or be equal to null";
+
         public const string EmailOrPasswordError = "Invalid login details";
+
+        public const string FirstLetterTitleError = "Title must start with uppercase letter";
 
         public const string InvalidMinLengthError = "{0} must be at least {1} symbols.";
 
         public const string InvalidMaxLengthError = "{0} must be less than {1} symbols.";
 
         public const string InvalidLengthError = "{0} must be exactly {1} symbols";
+
+        public const string InvalidNumberError = "{0} must be greater than {1}";
 
         public class Account
         {

@@ -86,7 +86,7 @@
                 return new RedirectResponse("/login");
             }
 
-            this.Request.Session.Clear();
+            this.Request.Session.Clear(SessionStore.CurrentUserKey);
 
             return new RedirectResponse("/");
         }

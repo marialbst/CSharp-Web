@@ -12,6 +12,8 @@
 
         void Clear();
 
+        void Clear(string key);
+
         bool IsAuthenticated();
 
         bool Contains(string key);
