@@ -6,6 +6,11 @@
 
     public class User
     {
+        public User()
+        {
+            this.Games = new List<UserGame>();
+        }
+
         public int Id { get; set; }
 
         [Required]
@@ -22,7 +27,7 @@
         [MaxLength(ValidationConstants.Account.FullNameMaxLength)]
         public string FullName { get; set; }
 
-        public ICollection<UserGame> Games { get; set; } = new List<UserGame>();
+        public ICollection<UserGame> Games { get; set; }
 
         public bool IsAdmin { get; set; }
     }

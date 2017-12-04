@@ -105,6 +105,18 @@
                 .AddRoute("/games/details/{(?<id>[0-9]+)}", new GetHandler(ctx => new GameController(ctx.Request).Details(int.Parse(ctx.Request.UrlParameters["id"]))));
 
             appRouteConfig
+                .AddRoute("/cart", new GetHandler(ctx => new GameController(ctx.Request).Cart()));
+
+            appRouteConfig
+                .AddRoute("/cart", new PostHandler(ctx => new GameController(ctx.Request).Order()));
+
+           appRouteConfig
+                .AddRoute("/cart/add/{(?<id>[0-9]+)}", new GetHandler(ctx => new GameController(ctx.Request).CartAdd(int.Parse(ctx.Request.UrlParameters["id"]))));
+
+            appRouteConfig
+                .AddRoute("/cart/remove/{(?<id>[0-9]+)}", new GetHandler(ctx => new GameController(ctx.Request).CartRemove(int.Parse(ctx.Request.UrlParameters["id"]))));
+
+            appRouteConfig
                .AddRoute(@"/Images/{(?<imagePath>[a-zA-Z0-9_]+\.(jpg|png))}",
                     new GetHandler(ctx => new HomeController(ctx.Request).Image(ctx.Request.UrlParameters["imagePath"])));
         }

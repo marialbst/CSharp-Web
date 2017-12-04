@@ -8,7 +8,9 @@
         public DbSet<User> Users { get; set; }
 
         public DbSet<Game> Games { get; set; }
-        
+
+        public DbSet<UserGame> UserGames { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
             builder.UseSqlServer("Server=.;Database=GameStoreDb;Integrated Security=True;");
@@ -23,14 +25,14 @@
                 .HasIndex(u => u.Email)
                 .IsUnique();
 
-            builder.Entity<User>()
-                .HasMany(u => u.Games)
-                .WithOne(g => g.User)
+            builder.Entity<UserGame>()
+                .HasOne(ug => ug.User)
+                .WithMany(u => u.Games)
                 .HasForeignKey(g => g.UserId);
 
-            builder.Entity<Game>()
-                .HasMany(g => g.Users)
-                .WithOne(u => u.Game)
+            builder.Entity<UserGame>()
+                .HasOne(ug => ug.Game)
+                .WithMany(g => g.Users)
                 .HasForeignKey(u => u.GameId);
         }
     }

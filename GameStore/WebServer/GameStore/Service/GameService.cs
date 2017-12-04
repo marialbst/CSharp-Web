@@ -156,5 +156,23 @@
                     }).ToList();
             }
         }
+
+        public IndexViewGame Get(int id)
+        {
+            using (var db = new GameStoreDbContext())
+            {
+                return db.Games
+                    .Select(g => new IndexViewGame()
+                    {
+                        Id = g.Id,
+                        Title = g.Title,
+                        ImageThumbnail = g.ImageThumbnail,
+                        Description = g.Description,
+                        Price = g.Price,
+                        Size = g.Size
+                    })
+                    .FirstOrDefault(g => g.Id == id);
+            }
+        }
     }
 }

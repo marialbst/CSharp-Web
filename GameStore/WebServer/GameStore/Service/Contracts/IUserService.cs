@@ -2,6 +2,8 @@
 {
     using ViewModels.Account;
     using Data.Models;
+    using WebServer.GameStore.ViewModels.Game;
+    using System.Collections.Generic;
 
     public interface IUserService
     {
@@ -12,5 +14,9 @@
         bool Find(string email, string password);
 
         User Find(string email);
+
+        bool Exists(string email);
+
+        int Order(HashSet<IndexViewGame> orderGames, string username);
     }
 }

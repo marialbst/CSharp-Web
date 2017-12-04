@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using System;
+using System.Collections.Generic;
 
-namespace WebServer.GameStore.Data.Migrations
+namespace WebServer.Migrations
 {
     public partial class InitialDb : Migration
     {
@@ -17,7 +18,7 @@ namespace WebServer.GameStore.Data.Migrations
                     Description = table.Column<string>(nullable: false),
                     ImageThumbnail = table.Column<string>(nullable: false),
                     Price = table.Column<decimal>(nullable: false),
-                    ReleaseDate = table.Column<DateTime>(nullable: false),
+                    ReleaseDate = table.Column<DateTime>(nullable: true),
                     Size = table.Column<double>(nullable: false),
                     Title = table.Column<string>(maxLength: 100, nullable: false),
                     TrailerId = table.Column<string>(maxLength: 11, nullable: false)
@@ -33,10 +34,10 @@ namespace WebServer.GameStore.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Email = table.Column<string>(nullable: false),
-                    FullName = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(maxLength: 30, nullable: false),
+                    FullName = table.Column<string>(maxLength: 30, nullable: true),
                     IsAdmin = table.Column<bool>(nullable: false),
-                    Password = table.Column<string>(nullable: false)
+                    Password = table.Column<string>(maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {

@@ -10,6 +10,7 @@
     using WebServer.GameStore.ViewModels.Game;
     using System.Text;
     using WebServer.Server.HTTP;
+    using WebServer.GameStore.ViewModels;
 
     public class HomeController : Controller
     {
@@ -110,7 +111,18 @@
                 }
 
                 result.AppendLine($"<a class=\"card-button btn btn-outline-primary\" name=\"info\" href=\"/games/details/{gamesList[i].Id}\">Info</a>");
-                result.AppendLine($"<a class=\"card-button btn btn-primary\" name=\"buy\" href=\"/cart/add/{gamesList[i].Id}\">Buy</a>");
+
+                if (this.Request.Session.Get<Cart>(SessionStore.ShoppingCartKey).Games.Select(g => g.Id).Contains(gamesList[i].Id))
+                {
+                    this.ViewData["hideModal"] = Controller.RemoveHideElementClass;
+                    result.AppendLine($"<button class=\"card-button btn btn-primary\" name=\"buy\" data-toggle=\"modal\" data-target=\"#myModal\">Buy</button>");
+                }
+                else
+                {
+                    this.ViewData["hideModal"] = Controller.AddHideElementClass;
+                    result.AppendLine($"<a class=\"card-button btn btn-primary\" name=\"buy\" href=\"/cart/add/{gamesList[i].Id}\">Buy</a>");
+                }
+
                 result.AppendLine("</div></div>");
 
                 if (i % 3 == 2)

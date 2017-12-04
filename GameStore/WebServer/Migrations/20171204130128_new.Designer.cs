@@ -3,13 +3,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
+using WebServer.GameStore.Data;
 
-namespace WebServer.GameStore.Data.Migrations
+namespace WebServer.Migrations
 {
     [DbContext(typeof(GameStoreDbContext))]
-    [Migration("20171127074515_InitialDb")]
-    partial class InitialDb
+    [Migration("20171204130128_new")]
+    partial class @new
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -31,7 +34,7 @@ namespace WebServer.GameStore.Data.Migrations
 
                     b.Property<decimal>("Price");
 
-                    b.Property<DateTime>("ReleaseDate");
+                    b.Property<DateTime?>("ReleaseDate");
 
                     b.Property<double>("Size");
 
@@ -54,14 +57,17 @@ namespace WebServer.GameStore.Data.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Email")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(30);
 
-                    b.Property<string>("FullName");
+                    b.Property<string>("FullName")
+                        .HasMaxLength(30);
 
                     b.Property<bool>("IsAdmin");
 
                     b.Property<string>("Password")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(50);
 
                     b.HasKey("Id");
 
@@ -81,7 +87,7 @@ namespace WebServer.GameStore.Data.Migrations
 
                     b.HasIndex("GameId");
 
-                    b.ToTable("UserGame");
+                    b.ToTable("UserGames");
                 });
 
             modelBuilder.Entity("WebServer.GameStore.Data.Models.UserGame", b =>

@@ -6,6 +6,7 @@
     {
         public const string SessionCookieKey = "SessionId";
         public const string CurrentUserKey = "CurrentUser";
+        public const string ShoppingCartKey = "ShoppingCart";
 
         private static readonly ConcurrentDictionary<string, HttpSession> sessions = new ConcurrentDictionary<string, HttpSession>();
 

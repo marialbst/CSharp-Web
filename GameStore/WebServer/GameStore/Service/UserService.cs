@@ -5,6 +5,8 @@
     using Data;
     using ViewModels.Account;
     using Data.Models;
+    using WebServer.GameStore.ViewModels.Game;
+    using System.Collections.Generic;
 
     public class UserService : IUserService
     {
@@ -58,6 +60,48 @@
             using (var db = new GameStoreDbContext())
             {
                 return db.Users.Where(u => u.Email.ToLower() == email.ToLower()).FirstOrDefault();
+            }
+        }
+
+        public int Order(HashSet<IndexViewGame> orderGames, string username)
+        {
+           using (var db = new GameStoreDbContext())
+           {
+                int userId = this.Find(username).Id;
+
+                var user = db.Users
+                    .First(u => u.Id == userId);
+
+                var userGames = db.UserGames.Where(ug => ug.UserId == userId);
+
+                foreach (var orderGame in orderGames)
+                {
+                    var game = db.Games
+                        .First(g => g.Id == orderGame.Id);
+
+                    var order = new UserGame()
+                    {
+                        UserId = user.Id,
+                        User = user,
+                        GameId = game.Id,
+                        Game = game
+                    };
+
+                    if (!userGames.Any(ug => ug.UserId == userId && ug.GameId == game.Id))
+                    {
+                        db.Add(order);
+                    }
+                }
+
+                return db.SaveChanges();
+            }
+        }
+
+        public bool Exists(string email)
+        {
+            using (var db = new GameStoreDbContext())
+            {
+                return db.Users.Any(u => u.Email.ToLower() == email.ToLower());
             }
         }
     }

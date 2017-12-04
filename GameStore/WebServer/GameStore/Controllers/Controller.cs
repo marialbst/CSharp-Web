@@ -13,6 +13,7 @@
     using Server.HTTP.Response;
     using Service;
     using Service.Contracts;
+    using ViewModels;
 
     public abstract class Controller
     {
@@ -28,18 +29,27 @@
             this.userService = new UserService();
             this.Request = request;
 
+            if (!this.Request.Session.Contains(SessionStore.ShoppingCartKey))
+            {
+                this.Request.Session.Add(SessionStore.ShoppingCartKey, new Cart());
+            }
+
             this.ViewData = new Dictionary<string, string>
             {
                 ["showError"] = AddHideElementClass,
                 ["user"] = AddHideElementClass,
                 ["guest"] = AddHideElementClass,
-                ["admin"] = AddHideElementClass
+                ["admin"] = AddHideElementClass,
+                ["itemsCount"] = $"{this.ItemsCount} {(this.ItemsCount != 1 ? "items":"item")}"
             };
 
             this.GetUserType();
         }
 
         protected IHttpRequest Request { get; private set; }
+
+        protected int ItemsCount
+            => this.Request.Session.Get<Cart>(SessionStore.ShoppingCartKey).Games.Count;
 
         protected bool IsAuthenticated
         {

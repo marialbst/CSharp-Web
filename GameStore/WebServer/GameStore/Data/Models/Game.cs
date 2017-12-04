@@ -7,6 +7,10 @@
 
     public class Game
     {
+        public Game()
+        {
+            this.Users = new List<UserGame>();
+        }
         public int Id { get; set; }
 
         [Required]
@@ -32,6 +36,6 @@
 
         public DateTime? ReleaseDate { get; set; }
 
-        public ICollection<UserGame> Users { get; set; } = new List<UserGame>();
+        public ICollection<UserGame> Users { get; set; }
     }
 }

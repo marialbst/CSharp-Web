@@ -13,6 +13,8 @@
 
         AddGameViewModel Find(int id);
 
+        IndexViewGame Get(int id);
+
         bool Exists(int id);
 
         bool Edit(int id, string title, string trailerId, string imageUrl, double size, decimal price, string description, DateTime releaseDate);
