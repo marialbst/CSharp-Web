@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SimpleMvcFramework\SimpleMvc.Framework.csproj" />
+    <ProjectReference Include="..\SimpleMvc.Framework\SimpleMvc.Framework.csproj" />
   </ItemGroup>
 
 </Project>
