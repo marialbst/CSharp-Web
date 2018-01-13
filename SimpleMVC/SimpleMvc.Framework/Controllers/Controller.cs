@@ -1,48 +1,103 @@
 ﻿namespace SimpleMvc.Framework.Controllers
 {
     using Contracts;
-    using Contracts.Generic;
-    using System;
     using System.Runtime.CompilerServices;
-    using ViewEngine;
-    using ViewEngine.Generic;
     using Helpers;
+    using Models;
+    using Views;
+    using ActionResults;
+    using System.Reflection;
+    using System.Collections.Generic;
+    using System;
+    using System.Linq;
+    using Attributes.Property;
+    using Security;
+    using WebServer.Http.Contracts;
+    using WebServer.Http;
 
     public abstract class Controller
     {
-        protected IActionResult View([CallerMemberName]string caller = "")
+
+        protected Controller()
         {
+            this.Model = new ViewModel();
+            this.User = new Authentication();
+        }
+
+        public ViewModel Model { get; set; }
+
+        protected internal Authentication User { get; private set; }
+
+        protected internal IHttpRequest Request { get; set; }
+
+        protected IViewable View([CallerMemberName]string caller = "")
+        {
+            this.InitializeViewData();
+
             string controllerName = ControllerHelpers.GetControllerName(this);
 
             string viewFullQualifiedName = ControllerHelpers.GetViewFullQualifiedName(controllerName, caller);
 
-            return new ActionResult(viewFullQualifiedName);
+            IRenderable view = new View(viewFullQualifiedName, this.Model.Data);
+
+            return new ViewResult(view);
         }
 
-        protected IActionResult View(string controller, string action)
+        private void InitializeViewData()
         {
-            string viewFullQualifiedName = ControllerHelpers
-                .GetViewFullQualifiedName(controller, action);
-
-            return new ActionResult(viewFullQualifiedName);
+            this.Model["displayType"] = this.User.IsAuthenticated ? "block" : "none";
         }
 
-        protected IActionResult<T> View<T>(T model, [CallerMemberName]string caller = "")
+        protected IRedirectable RedirectToAction(string redirectUrl)
         {
-            string controllerName = ControllerHelpers.GetControllerName(this);
-
-            string viewFullQualifiedName = ControllerHelpers
-                .GetViewFullQualifiedName(controllerName, caller);
-
-            return new ActionResult<T>(viewFullQualifiedName, model);
+            return new RedirectResult(redirectUrl);
         }
 
-        protected IActionResult<T> View<T>(T model, string controller, string action)
+        protected bool IsValidModel(object model)
         {
-            string viewFullQualifiedName = ControllerHelpers
-                .GetViewFullQualifiedName(controller, action);
+            PropertyInfo[] properties = model.GetType().GetProperties();
 
-            return new ActionResult<T>(viewFullQualifiedName, model);
+            foreach (PropertyInfo property in properties)
+            {
+                IEnumerable<Attribute> attributes = property
+                    .GetCustomAttributes()
+                    .Where(a => a is PropertyAttribute);
+
+                if (!attributes.Any())
+                {
+                    continue;
+                }
+
+                foreach (PropertyAttribute attribute in attributes)
+                {
+                    if (!attribute.IsValid(property.GetValue(model)))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        protected internal void InitializeController()
+        {
+            var userName = this.Request.Session.Get<string>(SessionStore.CurrentUserKey);
+
+            if (userName != null)
+            {
+                this.User = new Authentication(userName);
+            }
+        }
+
+        protected void SignIn(string name)
+        {
+            this.Request.Session.Add(SessionStore.CurrentUserKey, name);
+        }
+
+        protected void SignOut()
+        {
+            this.Request.Session.Clear();
         }
     }
 }

@@ -6,13 +6,9 @@
     using Models;
     using Data.Services.Contracts;
     using Data.Services;
-    using System;
-    using Framework.Contracts.Generic;
-    using App.ViewModels;
     using WebServer.Exceptions;
     using SimpleMvc.Domain.Entities;
     using System.Linq;
-    using WebServer.Http.Response;
 
     public class UsersController : Controller
     {
