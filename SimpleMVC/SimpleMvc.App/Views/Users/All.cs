@@ -2,23 +2,26 @@
 {
     using System.Text;
     using Framework.Contracts.Generic;
+    using Helpers;
     using ViewModels;
 
-    public class All : IRenderable<AllUsernamesViewModel>
+    public class All : IRenderable<AllUsersViewModel>
     {
-        public AllUsernamesViewModel Model { get; set; }
+        public AllUsersViewModel Model { get; set; }
 
         public string Render()
         {
             StringBuilder html = new StringBuilder();
-            var usernames = Model.Usernames;
-            
+            var users = Model.Users;
+
+            html.AppendLine(Constants.BackHomeConstant);
+
             html.AppendLine("<h2>All users:</h2>");
             html.AppendLine("<ul>");
 
-            foreach (var username in usernames)
+            foreach (var user in users)
             {
-                html.AppendLine($"<li>{username}</li>");
+                html.AppendLine($"<li><a href=\"/users/profile?id={user.Key}\">{user.Value}</li>");
             }
 
             html.AppendLine("</ul>");

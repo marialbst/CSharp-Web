@@ -4,6 +4,7 @@
     using System.Linq;
     using Contracts;
     using Domain.Entities;
+    using Microsoft.EntityFrameworkCore;
 
     public class UserService : IUserService
     {
@@ -30,11 +31,36 @@
             }
         }
 
-        public ICollection<string> AllUsernames()
+        public IDictionary<int, string> AllUsers()
         {
             using (var db = new NotesDbContext())
             {
-                return db.Users.Select(u => u.Username).ToList();
+                return db.Users.Include(u => u.Notes).ToDictionary(u => u.Id,u => u.Username);
+            }
+        }
+
+        public User GetUserById(int id)
+        {
+            using (var db = new NotesDbContext())
+            {
+                return db.Users.Include(u => u.Notes).FirstOrDefault(u => u.Id == id);
+            }
+        }
+
+        public void AddNoteToUser(int userId, string title, string content)
+        {
+            using (var db = new NotesDbContext())
+            {
+                User user = db.Users.Find(userId);
+
+                Note note = new Note
+                {
+                    Title = title,
+                    Content = content
+                };
+
+                user.Notes.Add(note);
+                db.SaveChanges();
             }
         }
     }

@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
-
-namespace SimpleMvc.Data.Services.Contracts
+﻿namespace SimpleMvc.Data.Services.Contracts
 {
+    using System.Collections.Generic;
+    using Domain.Entities;
+
     public interface IUserService
     {
         bool AddUserToTheDb(string username, string password);
-        ICollection<string> AllUsernames();
+        IDictionary<int, string> AllUsers();
+        User GetUserById(int id);
+        void AddNoteToUser(int userId, string title, string content);
     }
 }

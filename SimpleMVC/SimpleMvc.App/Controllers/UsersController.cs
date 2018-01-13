@@ -9,6 +9,10 @@
     using System;
     using Framework.Contracts.Generic;
     using App.ViewModels;
+    using WebServer.Exceptions;
+    using SimpleMvc.Domain.Entities;
+    using System.Linq;
+    using WebServer.Http.Response;
 
     public class UsersController : Controller
     {
@@ -42,14 +46,46 @@
             return this.Register();
         }
 
-        public IActionResult<AllUsernamesViewModel> All()
+        public IActionResult<AllUsersViewModel> All()
         {
-            AllUsernamesViewModel viewModel = new AllUsernamesViewModel()
+            AllUsersViewModel viewModel = new AllUsersViewModel()
             {
-                Usernames = this.userService.AllUsernames()
+                Users = this.userService.AllUsers()
             };
 
             return this.View(viewModel);
+        }
+
+        [HttpGet]
+        public IActionResult<UserProfileViewModel> Profile(int id)
+        {
+            User user = this.userService.GetUserById(id);
+
+            if (user == null)
+            {
+                throw new InvalidResponseException("User doesn't exist");
+            }
+
+            UserProfileViewModel viewModel = new UserProfileViewModel
+            {
+                UserId = user.Id,
+                Username = user.Username,
+                Notes = user.Notes.Select(n => new NoteViewModel
+                {
+                    Title = n.Title,
+                    Content = n.Content
+                })
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult<UserProfileViewModel> Profile(AddNoteModel model)
+        {
+            this.userService.AddNoteToUser(model.UserId, model.Title, model.Content);
+
+            return this.Profile(model.UserId);
         }
     }
 }

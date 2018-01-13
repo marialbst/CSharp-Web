@@ -2,6 +2,7 @@
 {
     using Framework.Contracts;
     using Framework.Controllers;
+    using Framework.Attributes.Methods;
 
     public class HomeController : Controller
     {

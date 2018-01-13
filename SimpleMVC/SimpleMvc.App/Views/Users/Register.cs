@@ -2,12 +2,15 @@
 {
     using System.Text;
     using Framework.Contracts;
+    using App.Helpers;
 
     public class Register : IRenderable
     {
         public string Render()
         {
             StringBuilder html = new StringBuilder();
+
+            html.AppendLine(Constants.BackHomeConstant);
 
             html.AppendLine($"<h2>Register new user:</h2>");
             html.AppendLine($"<form action=\"register\" method=\"POST\">");

@@ -10,6 +10,6 @@
 
         public string Password { get; set; }
 
-        public ICollection<Note> Notes { get; set; }
+        public ICollection<Note> Notes { get; set; } = new List<Note>();
     }
 }
