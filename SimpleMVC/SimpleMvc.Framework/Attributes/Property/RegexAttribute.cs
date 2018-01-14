@@ -13,7 +13,14 @@
 
         public override bool IsValid(object value)
         {
-            return Regex.IsMatch(value.ToString(), this.pattern);
+            string valueAsString = value as string;
+
+            if (valueAsString == null)
+            {
+                return true;
+            }
+
+            return Regex.IsMatch(valueAsString, this.pattern);
         }
     }
 }

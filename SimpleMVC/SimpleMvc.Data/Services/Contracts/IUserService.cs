@@ -9,5 +9,6 @@
         IDictionary<int, string> AllUsers();
         User GetUserById(int id);
         void AddNoteToUser(int userId, string title, string content);
+        bool FindUser(string username, string password);
     }
 }

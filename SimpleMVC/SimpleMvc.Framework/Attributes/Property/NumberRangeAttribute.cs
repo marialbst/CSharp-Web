@@ -14,7 +14,14 @@
 
         public override bool IsValid(object value)
         {
-            return this.minValue <= (double)value && this.maxValue >= (double)value;
+            var valueAsDouble = value as double?;
+
+            if (valueAsDouble == null)
+            {
+                return true;
+            }
+
+            return this.minValue <= valueAsDouble && this.maxValue >= valueAsDouble;
         }
     }
 }

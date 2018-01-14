@@ -37,9 +37,9 @@
 
             if (httpRequest != null)
             {
-                var httpResponse = await this.HandleRequest(httpRequest);
+                var httpResponse = this.HandleRequest(httpRequest);
 
-                var responseBytes = await this.GetResponseBytes(httpResponse);
+                var responseBytes = this.GetResponseBytes(httpResponse);
 
                 var byteSegments = new ArraySegment<byte>(responseBytes);
 
@@ -55,19 +55,20 @@
             this.client.Shutdown(SocketShutdown.Both);
         }
 
-        private async Task<byte[]> GetResponseBytes(IHttpResponse httpResponse)
+        private byte[] GetResponseBytes(IHttpResponse httpResponse)
         {
             var responseBytes = Encoding.UTF8.GetBytes(httpResponse.ToString()).ToList();
 
-            if (httpResponse is FileResponse)
+            var fileResponse = httpResponse as FileResponse;
+            if (fileResponse != null)
             {
-                responseBytes.AddRange(((FileResponse)httpResponse).FileData);
+                responseBytes.AddRange(fileResponse.FileData);
             }
 
             return responseBytes.ToArray();
         }
 
-        private async Task<IHttpResponse> HandleRequest(IHttpRequest httpRequest)
+        private IHttpResponse HandleRequest(IHttpRequest httpRequest)
         {
             if (httpRequest.Path.Contains("."))
             {

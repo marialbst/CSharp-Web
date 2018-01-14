@@ -18,7 +18,7 @@
 
         public static void Main()
         {
-            MvcEngine.Run(new WebServer(4333, new ControllerRouter()));
+            MvcEngine.Run(new WebServer(4333, new ControllerRouter(), new ResourceRouter()));
         }
     }
 }

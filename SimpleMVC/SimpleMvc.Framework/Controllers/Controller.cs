@@ -36,7 +36,12 @@
 
             string controllerName = ControllerHelpers.GetControllerName(this);
 
-            string viewFullQualifiedName = ControllerHelpers.GetViewFullQualifiedName(controllerName, caller);
+            string viewFullQualifiedName = string.Format(
+                "{0}\\{1}\\{2}",
+                MvcContext.Get.ViewsFolder,
+                controllerName,
+                caller
+            );
 
             IRenderable view = new View(viewFullQualifiedName, this.Model.Data);
 

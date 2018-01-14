@@ -49,18 +49,22 @@
             
             if (!File.Exists(templateFullQualifiedNameWithExtension))
             {
-                string errorPath = this.GetErrorPath();
-                string errorHtml = File.ReadAllText(errorPath);
-
-                this.viewData.Add("error","Requested view does not exist!");
-
-                return errorHtml;
+                this.viewData.Add("error", $"Requested view {templateFullQualifiedNameWithExtension} does not exist!");
+                return this.GetErrorHtml();
             }
 
             string htmlFileContent = File.ReadAllText(templateFullQualifiedNameWithExtension);
-            string result = layoutHtml.Replace(ContentPlaceholder, htmlFileContent);
+            return layoutHtml.Replace(ContentPlaceholder, htmlFileContent);
+        }
 
-            return result;
+        private string GetErrorHtml()
+        {
+            string errorPath = this.GetErrorPath();
+            string errorHtml = File.ReadAllText(errorPath);
+
+
+
+            return errorHtml;
         }
 
         private string GetErrorPath()
@@ -85,13 +89,9 @@
 
             if (!File.Exists(layoutHtmlQualifiedName))
             {
-                string errorPath = this.GetErrorPath();
-
-                string errorHtml = File.ReadAllText(errorPath);
-
                 this.viewData.Add("error", "Layout view does not exist!");
 
-                return errorHtml;
+                return this.GetErrorHtml();
             }
 
             string layoutHtmlFileContent = File.ReadAllText(layoutHtmlQualifiedName);

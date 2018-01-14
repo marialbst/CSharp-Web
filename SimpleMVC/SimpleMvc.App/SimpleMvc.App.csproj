@@ -10,8 +10,4 @@
     <ProjectReference Include="..\SimpleMvc.Framework\SimpleMvc.Framework.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
-
 </Project>

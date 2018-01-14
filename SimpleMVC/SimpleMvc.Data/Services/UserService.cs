@@ -35,7 +35,7 @@
         {
             using (var db = new NotesDbContext())
             {
-                return db.Users.Include(u => u.Notes).ToDictionary(u => u.Id,u => u.Username);
+                return db.Users.ToDictionary(u => u.Id,u => u.Username);
             }
         }
 
@@ -61,6 +61,14 @@
 
                 user.Notes.Add(note);
                 db.SaveChanges();
+            }
+        }
+
+        public bool FindUser(string username, string password)
+        {
+            using (var db = new NotesDbContext())
+            {
+                return db.Users.Any(u => u.Username == username && u.Password == password);
             }
         }
     }
