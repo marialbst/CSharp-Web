@@ -96,11 +96,6 @@
                 throw new InvalidResponseException("User doesn't exist");
             }
 
-            if(user.Username != this.User.Name)
-            {
-                this.Model["sameUser"] = "none";
-            }
-
             this.Model["username"] = user.Username;
             this.Model["userId"] = user.Id.ToString();
             this.Model["notes"] = user.Notes.Any()  ?
@@ -108,7 +103,6 @@
                     Environment.NewLine,
                     user.Notes.Select(n => $"<li><strong>{n.Title}</strong> - {n.Content}</li>"))
                 : string.Empty;
-            this.Model["sameUser"] = "block";
 
             return View();
         }
