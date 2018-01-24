@@ -5,6 +5,7 @@
     using System.Linq;
     using Contracts;
     using Data;
+    using Microsoft.EntityFrameworkCore;
     using Models;
     using WebServer.ByTheCake.ViewModels.Products;
 
@@ -47,7 +48,7 @@
                         Id = o.Id,
                         CreationDate = o.CreationTime,
                         Price = o.Products.Select(p => p.Product.Price).Sum()
-                    });   
+}); 
             }
         }
     }
