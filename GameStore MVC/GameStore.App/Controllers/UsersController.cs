@@ -2,14 +2,18 @@
 {
     using SimpleMvc.Framework.Attributes.Methods;
     using SimpleMvc.Framework.Contracts;
-    using GameStore.App.Models.Users;
-    using SimpleMvc.Framework.ActionResults;
-    using GameStore.App.Infrastructure;
+    using Models.Users;
+    using Infrastructure;
 
     public class UsersController : BaseController
     {
         public IActionResult Register()
         {
+            if (this.User.IsAuthenticated)
+            {
+                return this.RedirectToAction(IndexPath);
+            }
+
             return this.View();
         }
 
@@ -33,13 +37,16 @@
                 return this.View();
             }
 
-            this.SignIn(model.Email);
-
-            return new RedirectResult("/");
+            return this.RedirectToAction(LoginPath);
         }
 
         public IActionResult Login()
         {
+            if (this.User.IsAuthenticated)
+            {
+                return this.RedirectToAction(IndexPath);
+            }
+
             return this.View();
         }
 
@@ -64,14 +71,17 @@
 
             this.SignIn(model.Email);
 
-            return new RedirectResult("/");
+            return this.RedirectToAction(IndexPath);
         }
 
         public IActionResult Logout()
         {
-            this.SignOut();
+            if (this.User.IsAuthenticated)
+            {
+                this.SignOut();
+            }
 
-            return new RedirectResult("/");
+            return this.RedirectToAction(IndexPath);
         }
     }
 }

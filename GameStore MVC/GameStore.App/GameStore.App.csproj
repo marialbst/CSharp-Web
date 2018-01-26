@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GameStore.Data\GameStore.Data.csproj" />
     <ProjectReference Include="..\GameStore.Services\GameStore.Services.csproj" />
     <ProjectReference Include="..\SimpleMvc.Framework\SimpleMvc.Framework.csproj" />
     <ProjectReference Include="..\WebServer\WebServer.csproj" />

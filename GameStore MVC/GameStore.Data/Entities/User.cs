@@ -19,7 +19,7 @@
         [MaxLength(100)]
         public string Name { get; set; }
 
-        //public ICollection<Order> Games { get; set; } = new List<Order>();
+        public ICollection<Order> Games { get; set; } = new List<Order>();
 
         public bool IdAdmin { get; set; }
     }

@@ -31,6 +31,15 @@
             }
         }
 
+        public bool Exists(string name)
+        {
+            using (var db = new GameStoreMvcDbContext())
+            {
+                return db.Users
+                    .Any(u => u.Email.ToLower() == name.ToLower());
+            }
+        }
+
         public bool Find(string email, string password)
         {
             using (var db = new GameStoreMvcDbContext())
@@ -38,6 +47,22 @@
                 return db.Users
                     .Any(u => u.Email.ToLower() == email.ToLower() 
                            && u.Password == password);
+            }
+        }
+
+        public bool IsAdmin(string name)
+        {
+            using (var db = new GameStoreMvcDbContext())
+            {
+                var user = db.Users
+                    .FirstOrDefault(u => u.Email.ToLower() == name.ToLower());
+
+                if(user == null)
+                {
+                    return false;
+                }
+
+                return user.IdAdmin;
             }
         }
     }

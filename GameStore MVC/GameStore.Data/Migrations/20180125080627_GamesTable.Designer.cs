@@ -11,9 +11,10 @@ using System;
 namespace GameStore.Data.Migrations
 {
     [DbContext(typeof(GameStoreMvcDbContext))]
-    partial class GameStoreMvcDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180125080627_GamesTable")]
+    partial class GamesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

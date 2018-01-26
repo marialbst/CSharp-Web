@@ -20,11 +20,11 @@
 
         protected Controller()
         {
-            this.Model = new ViewModel();
+            this.ViewModel = new ViewModel();
             this.User = new Authentication();
         }
 
-        public ViewModel Model { get; set; }
+        public ViewModel ViewModel { get; set; }
 
         protected internal Authentication User { get; private set; }
 
@@ -43,14 +43,14 @@
                 caller
             );
 
-            IRenderable view = new View(viewFullQualifiedName, this.Model.Data);
+            IRenderable view = new View(viewFullQualifiedName, this.ViewModel.Data);
 
             return new ViewResult(view);
         }
 
         private void InitializeViewData()
         {
-            this.Model["displayType"] = this.User.IsAuthenticated ? "block" : "none";
+            this.ViewModel["displayType"] = this.User.IsAuthenticated ? "block" : "none";
         }
 
         protected IRedirectable RedirectToAction(string redirectUrl)
@@ -85,9 +85,10 @@
             return true;
         }
 
-        protected internal void InitializeController()
+        protected internal virtual void InitializeController()
         {
-            var userName = this.Request.Session.Get<string>(SessionStore.CurrentUserKey);
+            var userName = this.Request.Session
+                .Get<string>(SessionStore.CurrentUserKey);
 
             if (userName != null)
             {
