@@ -8,7 +8,7 @@
 
     public class GameService : IGameService
     {
-        public ICollection<AllGamesModel> All()
+        public IEnumerable<AllGamesModel> All()
         {
             using (var db = new GameStoreMvcDbContext())
             {

@@ -5,6 +5,6 @@
 
     public interface IGameService
     {
-        ICollection<AllGamesModel> All();
+        IEnumerable<AllGamesModel> All();
     }
 }
